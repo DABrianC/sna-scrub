@@ -1,0 +1,377 @@
+---
+title: "Collaboration"
+format:
+  html:
+    toc: true
+    css: prep/styles.css
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+```{r}
+source(here::here("./prep/prep.r"))
+source(here::here("./scripts/00 cleaning script.R"))
+source(here::here("./scripts/01 descriptives.R"))
+source(here::here("./scripts/01 analysis subgraphs script.R"))
+source(here::here("./scripts/01 analysis script.R"))
+
+```
+
+::: definition_box
+**Collaboration** is defined as actors sharing a common purpose and goals, and coordinating the work on accountability to reduce overlap, duplication, and strengthen overall effectiveness while deploying a range of complementary horizontal, vertical, and diagonal accountability strategies.
+:::
+
+This analysis explores the levels of engagement of On Nigeria grantees with other grantees and with non-grantees as well as across types of organizations and cohorts. Where there are connections, organizations typically operate at high levels of collaboration and frequently. Figure 2 presents the overall network map for all On Nigeria grantees and their non-grantee partners.
+
+[**Finding 1: Individual cohorts are denser than the overall On Nigeria network.**]{style="color: #00457c;"}
+
+The densities of individual cohort neighborhoods are higher than the overall network. For these purposes a cohort neighborhood includes those organizations that are in the cohort, and organizations that cohort members are directly connected to. The density of the overall network is `{r} round(density_non_end*100, digits = 0)` percent. This aligns with the density of the baseline study, and should be read as neither high nor low.
+
+```{r, fig.align="center", fig.width=6, fig.height=4, out.width="75%", fig.cap="Figure 1. The densities of the overall networks and the cohorts compared."}
+
+density_df <- data.frame(network = c("Behavior Change", "Criminal Justice", "JoinBodi", "Media and Journalism", "Overall", "Media and Journalism", "Behavior Change", "Criminal Justice", "JoinBodi", "Overall")
+                                     , density = c(bechange_nbhd_density, crimjust_nbhd_density, joinbodi_nbhd_density, medjourn_nbhd_density, g_non_density, .07, .06, .04, .04, .01)
+                         , group = c("endline", "endline", "endline", "endline", "endline", "baseline", "baseline", "baseline", "baseline", "baseline")) |> 
+                                mutate(density = round(density*100, digits = 0))
+
+subtitle <- "<span style = 'font-size:12pt; color:#00457C;'>**Endline**</span><span style = 'font-size:12pt;'> network and cohort densities compared with </span><span style = 'font-size:12pt; color:#ADD8E6;'>**Baseline**</span><span style = 'font-size:12pt;'> densities</span>"
+
+ggplot(density_df)+
+  geom_col(aes(x = density, y = fct_reorder(network, density), fill = group)
+           #, fill = ""
+           , width = .6
+           , position = position_dodge(width = .8)) +
+  geom_text(aes(x = density, y = fct_reorder(network, density)
+                , label = paste0(density, "%"))
+            , position = position_dodge(width = .8)
+            , vjust = -.9, size = 3
+            , hjust = 1.25
+            , fontface = "bold"
+            , color = "white"
+            , data = density_df %>% filter(group == "endline"))+
+  geom_text(aes(x = density, y = fct_reorder(network, density)
+                , label = paste0(density, "%"))
+            , position = position_dodge(width = .8)
+            , vjust = 1.5, size = 3
+            , hjust = 1.25
+            , fontface = "bold"
+            , data = density_df %>% filter(group == "baseline"))+
+  theme_void() +
+  theme(axis.text.y = element_text(color = "black", size = 10, hjust = 1, face = "bold")
+        , axis.title.x = element_text(size = 10, face = "bold")
+        , plot.title = element_text(size = 12, face = "bold")
+        , plot.subtitle = element_markdown()
+        , plot.title.position = "plot"
+        , plot.margin = unit(c(10,10,20,10), "pt")
+        , legend.position = "none") +
+  labs(x = "Density"
+       , title = "Network density for the overall network and individual \ncohort-level neighborhoods."
+       , subtitle = subtitle) +
+  scale_fill_manual(values = c("endline" = "#00457C", "baseline" = "#ADD8E6"))
+  
+
+```
+
+A monte carlo simulation of 1,000 similarly structured networks provided a benchmark for comparing network statistics. The findings from this simulation similarly find that the network and the cohort neighborhoods perform similar to how we would expect them to perform. This data is available in Annex 3.
+
+This ensures that the full effect of cohorts as organizing bodies is captured in the findings. The criminal justice neighborhood has the highest density but is also the smallest neighborhood with only 31 organizations.[^collaboration-1] The quote below illustrates how cohorts are useful even for those outside of the formal cohort.
+
+[^collaboration-1]: Behavior Change neighborhood has `{r} gorder(bechange_nbhd)` organizations; JoinBodi neighborhood has `{r} gorder(joinbodi_nbhd)` organizations; Media and Journalism has `{r} gorder(medjourn_nbhd)` organziations
+
+::: box
+"In collaborating with other organizations, particularly with CISLAC we have this quarterly opportunity to meet all the organizations that were under the CISLAC cohorts. So we compare notes and we share experiences and then learn from each other. That was very, very effective... When you are doing something and sometimes you may lack a little knowledge on how best to go about it, you can call on a partner who might also have that relationship the other way around. And then it works out." *--Non Grantee FGD participant*
+:::
+
+A whole of network view demonstrates how all actors are connected via their connections and their connections' connections. In looking at the endline and baseline whole of network views, it is clear that the networks are relatively similar.
+
+::: panel-tabset
+## The Endline Network
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%", fig.cap="Figure 2. The entire network displayed with cohorts by color and grantee by shape."}
+
+
+#| fig-align: "center"
+#| fig-width: 12
+#| out-width: 100%
+
+subtitle <- "<span style = 'font-size:18pt; color:#0964B0;'>**Behavior Change Cohort**</span>, <span style = 'font-size:18pt; color:#B5984F;'>**Media and Journalism Cohort**</span>, <span style = 'font-size:18pt; color:#E17F48;'>**Criminal Justice Cohort**</span>, <br><span style = 'font-size:18pt; color:#5B507A;'>**JoinBodi Cohort**</span>" 
+
+
+#Main graph
+ggraph(g_non, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .8, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")) +
+  geom_node_point(aes(size = degree, shape = grantee), color = "white") +
+  geom_node_point(aes(size = degree, shape = grantee, color = cohort)) +
+  #geom_node_text(aes(filter = degree >= 9, label = names_pretty), size = 4, repel = TRUE) +
+  scale_size(range = c(2, 12)) +
+  scale_color_manual(values = palette)+
+  labs(title = "The Endline On Nigeria Accountability Network"
+       , subtitle = subtitle
+       , shape = ""
+       , size = "Degree")+
+  theme_graph() +
+  theme(legend.position = "bottom"
+        , legend.text = element_text(size = 14)
+        , legend.title = element_text(size = 16)
+        , plot.subtitle = element_markdown()
+        , plot.title = element_text(size = 20)) +
+  guides(color = "none", fill = "none"
+         , shape = guide_legend(override.aes = list(size = 6)))
+
+```
+
+## The Baseline Network
+
+![Figure 3: The baseline network showing data flows](data/baseline_network_vis1.png)
+:::
+
+[**Finding 2: Members of the On Nigeria-related portion of the accountability ecosystem tend to be highly collaborative.**]{style="color: #00457c;"}
+
+Among all connections, respondents rated `r df_collab$percent_high` percent[^collaboration-2] of them as highly collaborative. This means that there is frequent communication, long-term interaction and coordination, and that the partners share ideas and resources. In particular, high collaboration was reported among non-grantee--grantee relationships where `r df_collab_grantee |> filter(from_grantee == "Non Grantee", to_grantee == "Grantee") |>  pull(percent_high)` percent[^collaboration-3] were considered high collaboration. Figure 4 shows a network map of levels of collaboration and Figure 5 shows levels of collaboration among grantees and non-grantees. Notably, only four percent of all collaborations were considered low. In the baseline only seven percent of collaborations were rated as Low as well. Low level collaboration refers to infrequent networking and/or infrequent information sharing.
+
+[^collaboration-2]: `r df_collab$n_high` connections
+
+[^collaboration-3]: `r df_collab_grantee |> filter(from_grantee == "Non Grantee", to_grantee == "Grantee") |>  pull(n_high)` connections
+
+::: panel-tabset
+## The Network highlighting collaboration level
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%", fig.cap="Figure 4. The entire network displayed with cohorts by color and grantee by shape."}
+
+
+#| fig-align: "center"
+#| fig-width: 12
+#| out-width: 100%
+
+subtitle <- "<span style = 'font-size:18pt; color:#0964B0;'>**Behavior Change Cohort**</span>, <span style = 'font-size:18pt; color:#B5984F;'>**Media and Journalism Cohort**</span>, <span style = 'font-size:18pt; color:#E17F48;'>**Criminal Justice Cohort**</span>, <br><span style = 'font-size:18pt; color:#5B507A;'>**JoinBodi Cohort**</span>" 
+
+E(g_non)$level_collab1 <- str_trim(factor(E(g_non)$level_collab1, levels = c("High", "Medium", "Low")))
+
+#Main graph
+ggraph(g_non, layout = "stress") +
+  geom_edge_link0(aes(linetype = level_collab1), edge_color = "lightgrey", edge_linewidth = .8, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")) +
+  geom_node_point(aes(size = degree, shape = grantee), color = "white") +
+  geom_node_point(aes(size = degree, shape = grantee, color = cohort)) +
+  #geom_node_text(aes(filter = degree >= 9, label = names_pretty), size = 4, repel = TRUE) +
+  scale_size(range = c(2, 12)) +
+  scale_color_manual(values = palette)+
+  scale_linetype_manual(values = 
+                       c("High" = "solid"
+                         , "Medium" = c(4, 2)
+                         , "Low" = c(.5,.5))) +
+  labs(title = "The Endline On Nigeria Accountability Network"
+       , subtitle = subtitle
+       , shape = ""
+       , size = "Degree")+
+  theme_graph() +
+  theme(legend.position = "bottom"
+        , legend.text = element_text(size = 14)
+        , legend.title = element_text(size = 16)
+        , plot.subtitle = element_markdown()
+        , plot.title = element_text(size = 20)) +
+  guides(color = "none", fill = "none"
+         , shape = guide_legend(override.aes = list(size = 6))
+         , linetype = guide_legend(title = "Connection\nLevel"))
+
+```
+
+## Levels of Collaboration
+
+```{r, fig.cap="Figure 5: The majority of collaborations were rated as high, and this was especially true among non-grantee to grantee connetions."}
+
+df_collab_grantee_ft
+```
+:::
+
+In FGD discussions the beneficial role of the cohort was highlighted by grantees and non-grantees alike with participants referencing the supportive collaboration and inherent trust of other members. The cohorts serve as a space for like-minded organizations to interact more often than they otherwise would. Participants noted how this frequent collaboration was required to foster effective collaborative partnerships.
+
+::: box
+"We have good working relationships with some of our cohort members as well as now we have what we call like an annual conference for the MAJ Cohort, for example, which all the partner organizations under the cohort are going to participate in. So every year would host a conference and this. I don't know if that would happen this year but we've been able to do it for over three, the last three years. And I believe that would also be able to come together to still run some things like that." *--Media and Journalism cohort, FGD participant*
+:::
+
+Survey data supports this view that the cohorts are useful collaboration mechanisms with nearly all respondents reporting that the level of cohort--cohort collaboration is either high or medium.
+
+```{r, fig.cap="Figure 6: Intra cohort collaborations were almost always rated as either high or medium, meaning that these partners are engaging in longer term sharing and partnerships."}
+
+df_collab_cohort |> 
+  dplyr::select(From, To, 'High Collaboration', 'Medium Collaboration', 'Low Collaboration') |> 
+  filter(From == To) |> 
+  flex_fun()
+
+```
+
+[**Finding 3: There are a few central organizations across all cohorts that serve as hubs and play the role of key connectors across the network.**]{style="color: #00457c;"}
+
+There are a few organizations that operate as central hubs in the network, both within and across cohorts. With the exception of Media and Journalism grantees, grantees tend to collaborate most with non-grantees or with grantees in their own cohort. Yet, within and across cohorts, the ratio of realized connections to all possible connections remains quite low. This should not be interpreted as a negative given the robust collaboration that appears to be occurring.
+
+To better understand the key organizations in the overall network, Figure 7 presents the network in a centrality layout. The organizations closer to the middle, with larger bubbles, and with labels play more important role in connecting the different parts of the overall network. The five most prominent organizations filling this role in the overall network are Wole Soyinka Centre for Investigative Journalism (WSCIJ), Progressive Impact Organization for Community Development (PRIMORG), Daily Trust Foundation (DTF), and the Centre for Information Technology and Development (CITAD). It is also worth noting that the cohorts of Media and Journalism and JoinBodi are well represented in Figure 7, with Behavior Change and Criminal Justice also appearing. The Independent Corrupt Practices Commission (ICPC), formerly a grantee, and WikkiTimes Media, Ltd. (WKTL) also play this important role from outside the formal grantee network.
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%", fig.cap="Figure 7. Hub organizations are located closer to the center. These hubs act as connectors across the whole network."}
+
+#| fig-align: "center"
+#| fig-width: 12
+#| out-width: 100%
+
+subtitle <- "<span style = 'font-size:18pt; color:#0964B0;'>**Behavior Change Cohort**</span>, <span style = 'font-size:18pt; color:#B5984F;'>**Media and Journalism Cohort**</span>, <span style = 'font-size:18pt; color:#E17F48;'>**Criminal Justice Cohort**</span>, <br><span style = 'font-size:18pt; color:#5B507A;'>**JoinBodi Cohort**</span>" 
+ggraph(g_non, layout = "centrality", cent = igraph::betweenness(g_non))+
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                       , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                       , ends = "last", type = "closed"), threshold = .4, n_cycle = 2) +
+  geom_node_point(aes(size = igraph::betweenness(g_non), shape = grantee), color = "white") +
+  geom_node_point(aes(size = igraph::betweenness(g_non), shape = grantee, color = cohort)) +
+  geom_node_text(aes(filter = igraph::betweenness(g_non) >= quantile(igraph::betweenness(g_non), .9), label = acronym), size = 6, repel = TRUE) +
+  scale_size(range = c(1, 12)) +
+  scale_color_manual(values = palette)+
+  labs(title = "Key Connectors in the On Nigeria Accountability Network"
+       , subtitle = subtitle
+       , shape = "Grantee"
+       , size = "Degree")+
+  coord_fixed() +
+  theme_graph() +
+  theme(legend.position = "bottom"
+        , legend.text = element_text(size = 14)
+        , legend.title = element_text(size = 16)
+        , plot.subtitle = element_markdown()
+        , plot.title = element_text(size = 20)) +
+  guides(color = "none", fill = "none")
+```
+
+The baseline study identified primarily Media and Journalism and JoinBodi grantees, as well as one Criminal Justice grantee among the key hub organizations. These organizations included the Independent Corrupt Practices Commission (ICPC), Shehu Musa Yar’Adua Foundation (SMYAF), Centre for Journalism, Innovation, and Development (CJID) (MJ), Wole Soyinka Centre for Investigative Journalism (WSCIJ), Connected Development Initiative (CODE), Progressive Impact Organization for Community Development (PRIMORG), and Daily Trust. The majority of these organizations remain important to the overall network. From the baseline to the endline, the network evolved to include organizations from each cohorts among its connecting organizations.
+
+[**Finding 4: The majority of grantees interact more with non-grantees, followed by grantees in their cohort, than with grantees in other cohorts. The exception is Media and Journalism grantees, who most commonly engage with fellow cohort members.**]{style="color: #00457c;"}
+
+This finding carried over from the baseline to the endline. Grantees are most often connected to non-grantees, and next they tend to be connected to their cohort partners. Figure 8 shows the aggregated flows across cohorts in the endline dataset. The Media and Journalism cohort is the most diffused across the network, and JoinBodi is the next most diffused. The grantees' influence based depth and number of connections with non-grantees appears quite strong.
+
+```{r, fig.align="center", fig.width=12, fig.height=6, out.width="100%", fig.cap="Figure 8. Cohort members are most frequently connected with non-grantees and next most connected with their own cohort grantees."}
+
+#| fig-align: "center"
+#| fig-width: 12
+#| out-width: 100%
+
+df_cohorts <- dat6_non6 |> 
+  select(organization, cohort) 
+
+df_sankey <- matches_non |> 
+  left_join(df_cohorts, by = join_by(from == organization)) |> 
+  left_join(df_cohorts, by = join_by(to.x == organization)) |> 
+  group_by(cohort.x, cohort.y) |> 
+  count(cohort.x, cohort.y) |> 
+  group_by(cohort.x) |> 
+  arrange(desc(cohort.x)) |> 
+  ungroup() |> 
+  mutate(total = cumsum(n)) |> 
+  group_by(cohort.x) |> 
+  mutate(percent = n/sum(n)*100
+         , midpoint = cumsum(n) - n/2) 
+  #ungroup() |> 
+  #mutate(midpoint = cumsum(n) - n/2)
+  
+#Overall sankey chart
+ggplot(df_sankey, aes(axis1 = cohort.x
+                      , axis2 = cohort.y
+                      , fill = cohort.x
+                      , y = n)) +
+  geom_flow() +
+  #geom_stratum(aes(fill = cohort.x))+
+  geom_stratum(aes(fill = after_stat(stratum))
+               , color = "white"
+               , width = .4)+
+  geom_text(stat = "stratum", 
+            aes(label = str_wrap(after_stat(stratum)
+                                 , width = 14))
+            , color = "white") +
+  #geom_text(aes(label = paste0(round(percent, digits = 0), "%")
+    #            , y = total-2)
+     #       , x = 1.75) +            
+  scale_x_discrete(limits = c("Behavior Change"
+                              , "Criminal Justice"
+                              , "JoinBodi"
+                              , "Media and Journalism"
+                              , "Non Grantee")
+                   , expand = c(.1, .1)) +
+  #scale_x_discrete(limits = c("cohort.x", "cohort.y")) +
+  theme_void() +
+  theme(legend.position = "none"
+        , title = element_text(face = "bold"))+
+  labs(title = "Most collaborations are from cohorts to non-grantees"
+       , x = "From cohort"
+       , y = "To cohort") +
+  scale_fill_manual(values = c("Behavior Change" = palette[1]
+                               , "Criminal Justice" = palette[2]
+                               , "JoinBodi" = palette[3]
+                               , "Media and Journalism" = palette[4]
+                               , "Non Grantee" = palette[5]
+                               , "Other" = "lightgrey")) +
+  scale_x_discrete(expand = c(.3, .3))
+
+```
+
+[**Finding 5: Network actors frequently support political participation and/or collective advocacy, and civil society oversight of government performance in their work to reduce corruption**]{style="color: #00457c;"}
+
+Collaboration stories shared during FGDs demonstrate that both grantees and non-grantees primarily engage in vertical social accountability approaches. Of the the 34 collaboration stories shared, 22 used vertical approaches[^collaboration-4], 10 used horizontal approaches[^collaboration-5], and two used diagonal approaches[^collaboration-6].
+
+[^collaboration-4]: When individual citizens, groups, and organizations play a direct role in holding governments to account using political voice through participation in democratic political processes, and with service providers using consumer voice. There are formal processes, such as elections, which are an institutional channel of vertical accountability; and there are informal processes through which citizens organize themselves into associations capable of lobbying governments and private service providers, demanding explanations and threatening fewer formal sanctions like negative publicity.
+
+[^collaboration-5]: Consists of formal relationships within the state itself, with a focus on internal checks and oversight processes, whereby one state actor has the formal authority to demand explanations or impose penalties on another. For example, executive agencies must explain their decisions to legislatures, and can in some cases be overruled or sanctioned for procedural violations.
+
+[^collaboration-6]: Refers to hybrid combinations of vertical and horizontal oversight, involving direct citizen engagement within state institutions. This can involve either participation in or direct management of official oversight bodies.
+
+### Vertical approaches
+
+Vertical approaches used by participants primarily involved sharing of information and behavior change techniques. Information sharing involved capacity building activities, media and investigative reporting, and sharing data through constituency project tracking, the Transparency and Integrity Index, and court data on the Uwazi platform.
+
+JoinBodi grantees shared several stories about sharing information on corruption and using vertical social accountability approaches. Their strategies involved anti-corruption clubs (2), capacity building activities (3), sensitizations (2), and an anticorruption summit. One of the stories of sensitization involved the use of TV and radio programs and townhalls to inform citizens about elections.
+
+Criminal Justice grantees, in contrast, collected and shared data through the publication of the Transparency and Integrity Index and the Uwazi platform which provide data on MDAs and court cases, respectively. One Criminal Justice grantee also created a coalition of CSOs to advocate for criminal justice reform.
+
+Across the four Behavior Change participants, they shared seven different collaboration stories using vertical approaches. Both Palace of Priests and Al-Habibiyyah shared three stories each about the behavior change work through training and sermons with Pentacostal and Islamic congregants, respectively. These techniques go beyond sharing information to creating a culture of accountability by first creating accountability champions of leadership and then different factions of the group including youth. These people then encourage a change in the wider group.
+
+Both Media and Journalism and non-grantee participants primarily used media to share information and encourage vertical social accountability. This manifested in training investigative reporters (2), amplification (1), and producing TV, radio, and online platforms to share information and foster dialogue (1) for Media and Journalism grantees. For non-grantees this manifested as training investigative reporters (3), conducting and amplifying investigative reporting (2), and using media for advocacy (1).
+
+Compared to the baseline, this includes a slightly different set of vertical social accountability approaches. The baseline also included investigative reporting, media for sensitization, and constituency project tracking along with collaborations that fostered grassroots engagement, amplified women’s voices in elections, and provided legal representation in courts. The difference here may be the sample of participants who participated in FGDs rather than a significant change in grantee work between the baseline and endline. For example, Palace of Priests and Al-Habibiyyah’s work has been ongoing since 2020 (based on data from outside the SNA) but only two Behavior Change grantees were represented in the baseline FGDs, thereby showing what may be an artificial difference in the type of social accountability approaches used over time.
+
+### Horizontal approaches
+
+Horizontal approaches were only used in stories shared by JoinBodi (3), Criminal Justice (3), Media and Journalism (1), and Behavior Change (1) grantees. Primarily these approaches involved direct technical support or provision of tools for MDAs or ACAs, but in some cases also involved convening MDA representatives for interagency collaboration and dialogue.
+
+Two Joinbodi grantees fulfilled their role as conveners by working with a variety of stakeholders to ensure that the Open Government Partnership (OGP) was signed in Zamfara state and convening Federal High Court Judges for dialogues on public litigation to improve their understanding and rulings. One Criminal Justice grantee also brought together ACAs to reduce competition and encourage collaboration among the agencies.
+
+One other JoinBodi grantee provided tools and capacity building opportunities for the gender and disability desk officers for the Independent National Electoral Commission (INEC) to ensure inclusivity during elections. Other direct support from grantees involved a Media and Journalism grantee building fact-checking capacity at the National Orientation Agency (NOA), Criminal Justice support at Economic and Financial Crimes Commission (EFCC), Independent Corrupt Practices & Other Related Offences Commission (ICPC), and Nigerian Bar Association (NBA) via creation of e-learning systems and building capacity around forensic tracing and developing a digital court system in Borno state to speed up processing, as well as Behavior Change support in training high level policy actors on corruption, transparency, and accountability.
+
+There were no stories of direct technical support in the baseline, so this may represent a change throughout the period of On Nigeria.
+
+### Diagonal approaches
+
+The two diagonal social accountability approaches involved promoting enforcement of anticorruption legislation. A JoinBodi grantee translated and disseminated the whistleblower policy to increase awareness of the policy and how to use it among the public. One Media and Journalism grantee collaborated with another grantee to engage in litigation against Central Bank of Nigeria (CBN) for violating the Freedom of Information Act.
+
+The whistleblower legislation was also a prominent focus of diagonal approaches in the baseline. This may demonstrate its significance as a method for individuals to report on corrupt acts.
+
+[**Finding 6: Organizations collaborate in many different ways. The most frequent way mentioned was learning, information, and knowledge sharing, but it varies depending on the types of organizations collaborating.**]{style="color: #00457c;"}
+
+In the endline survey, respondents selected learning, information, and knowledge sharing to describe nearly three-quarters of all collaborations. As shown in Figure 9, this is the most frequently selected response. It is followed by resource sharing and joint anticorruption advocacy. These are the most frequently selected options when it is a grantee - non-grantee relationship. This findings reflects the importance of these inter-organizational relationships for knowledge sharing and organizational learning.
+
+```{r, fig.cap="Figure 9. When identifying the ways that they are collaborating, learning, information, and knowledge sharing is the most frequent selection."}
+
+flex_fun(data = ways_collab_grantee_ft)
+
+```
+
+In the baseline analysis, organizations noted that they sought out partnerships with organizations that compliment their skills. In endline FGDs, organizations similarly discussed seeking partners with complementary activities or skills.
+
+::: box
+So it's kind of complementary. And that's why when we're talking about collaboration with them, we are thinking about, okay, we have the power of convening certain meetings at very high level. So if ACAN and NIPSS come together to organize a forum for these high level actors, it will make a very, very serious impact. It was very clear where we are focusing and where ACAN is focusing or where the EFCC Institute is also focusing and where we are focusing. So as far as I'm concerned, there wasn't any form of overlap in what we were doing, but it was more complementary. *–Behavior Change FGD participant*
+:::
+
+[**Finding 7: Grantees' collaborative initiatives led to several quick wins. And in some cases, ongoing partnerships may have contributed to longer-term achievements.**]{style="color: #00457c;"}
+
+FGD participants described a number of quick-wins achieved through their partnerships including training and capacity building of several groups, building citizen awareness through media, establishing collaborative networks and platforms, and engaging government partners in collaboration. Both grantees and non-grantees were able to train journalists through their collaborative initiatives, and other grantees trained or built capacity of public officials at ACAs, the NOA, political parties, Islamic and Protestant congregants, and other policy actors. Others raised awareness of wider audiences through the media, distribution of rights and powers of authorities, and translating government policies. Others build collaborative platforms and networks such as Palace of Priest’s Christian Women Against Corruption and Youth Vanguard Against Corruption or others’ anticorruption, as well as the CMEDIA group, and CISLAC’s subgrantee group. Some grantees were also able to engage government MDAs on accountability issues including the OGP process in Zamfara state, working with BPSR to invite MDAs to grantee activities.
+
+Some participants have seen longer-term achievements through sustained partnership. These include policy and legal reforms, behavior change among youth, and journalism that results in actions. Policy and legal reforms include signing of the Open Government Partnership (OGP) in Zamfara state (the end result of the quick wins mentioned above), a police chief who is responsive to complaints from COMPPART Foundation, and enhanced understanding of public litigation leading to more favorable rulings by judges. Multiple grantees are working on behavior change with youth, but of particular note is Al-Habibiyyah’s work reaching youth with multiple touchpoints and messages to drive a culture shift from a young age. And finally, multiple MAJ grantees and CMEDIA subgrantees shared results of their investigative reporting that led to some type of response after they leveraged their partnerships with other organizations.

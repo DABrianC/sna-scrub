@@ -1,0 +1,276 @@
+---
+title: "Big Bet on Nigeria"
+subtitle: "Endline Social Network Analysis"
+author: "Brian Calhoon and Randi Rumbold"
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+```{r}
+source(here::here("./prep/prep.r"))
+source(here::here("./scripts/00 cleaning script.R"))
+source(here::here("./scripts/01 analysis script.R"))
+
+```
+
+# Introduction
+
+The MacArthur Foundation’s Big Bet On Nigeria program supports Nigerian-led efforts to reduce corruption by strengthening accountability, transparency, and participation. A resilient accountability ecosystem—the networks of relationships “between citizens and governing authorities … [and] other important actors, including media, private sector, diverse organized citizen groups, and various actors within the state itself” that collectively support social accountability—is essential to the success and sustainability of On Nigeria’s anticorruption programming (for more on accountability ecosystems, see Halloran’s Accountability Ecosystems: The Evolution of a Keyword). This social network analysis (SNA) report explores how On Nigeria grantees collaborate with other actors in the broader accountability ecosystem and with each other, the outcomes to which collaboration contributes, and how and to what end collaborative networks might be further strengthened, **to bolster anticorruption efforts**, now and in the future.
+
+# Purpose of This Document
+
+This brief analysis of centrality statistics is first meant to inform the selection of cases for the case study portion of the final evaluation, identify corrections in the data, and provide inputs into instrument design for the next phases of the SNA. 
+
+Beyond this, it is an initial look at the endline study network. Once more data is collected on the network during an additional survey round, further analysis of the local and global network statistics will reveal additional findings for the final evaluation.
+
+It begins with a short explanation of the centrality statistics used to help understand the organizations in the overall network and their place within it. An interactive visualization of the network follows before a few observations to help inform the case study selection. 
+
+*A few notes*
+
+*Please note that this does not currently include the 26 organizations that we expect to add from CMEDIA.*
+
+*The next round of survey data should allow us to eliminate missing data and get locations for all organizations so we can develop a geographic network map. It should also significantly increase the number of connections across the network.*
+
+*Consider the data viz to be first drafts.*
+
+
+# Methodology
+
+## Baseline data
+For this SNA, EnCompass distributed an online survey to On Nigeria grantees in all four cohorts (Behavior Change, Criminal Justice, Joinbodi, and Media and Journalism) and their non-grantee partners, and conducted focus group discussions with a subset of grantees. Baseline data collected in [month, year?] The full SNA dataset includes 127 organizations and captures 197 unique interactions. EnCompass used NodeXL software to produce social network statistics and transform survey data into network maps, then coded, analyzed, and synthesized all data to generate the overarching findings and conclusions presented in this report. This SNA captures only a slice of the accountability ecosystem in Nigeria.
+
+## Endline data
+
+*Please correct this description of events*
+
+
+In October 2024, EnCompass held a workshop in Abuja, Nigeria with On Nigeria grantees in all four cohorts (Behavior Change, Criminal Justice, Joinbodi, and Media and Journalism). Each grantee identified their primary partners, and in November 2024, EnCompass followed up with each grantee and identified partners to identify additional partner relationships. In January/February 2025, EnCompass will conduct an additional follow up survey and focus group discussions. 
+
+To clean, analyze, and visualize the network data, EnCompass used the R programming language and the [igraph](https://igraph.org/) network analysis package.
+
+# The network: First Cut
+
+Networks are used to understand interactions across people, organizations, or things we purchase on the internet. In this case, we are trying to understand the interactions between organizations. In network-speak, we refer to organizations as "nodes" and their connections as "edges". 
+
+The Endline network of On Nigeria grantees and partners consists of `{r} gorder(g)` nodes and `{r} gsize(g)` edges. These relationships are the focus of this network analysis. The nodes consist of `{r} length(dat_joined$grantee[dat_joined$grantee=="yes"])` grantees and `{r} length(dat_joined$grantee[dat_joined$grantee=="no"])` non-grantees. Data on connection from non-grantees will be collected in January 2025.
+
+# Centrality Statistics
+
+Global centrality statistics help understand each nodes place in the overall network and whether or not they are connected to many or few other nodes in the network. 
+
+Four commonly used centrality statistics are Betweenness Centrality, Closeness or Harmonic Centrality, Eigenvector Centrality, and Degree Centrality (overall, out, and in). 
+
+**Betweenness centrality** measures the extent to which an organization is connected to other network actors that are not connected to each other. Nodes with high betweenness serve as bridges between different parts of a network.
+
+**Closeness** and **Harmonic Centrality** calculates the average distance between a node and all other nodes in a network. It is used to identify nodes that reach other nodes quickly. In networks with disconnected parts it is used in place of closeness centrality. 
+
+**Eigenvector Centrality** is a measure of the influence of a node in a network. Those nodes who are connected to other well-connected nodes will have high eigenvector centrality scores.
+
+**Degree Centrality** is a count of the number of connections of each node. In directed networks it can have both an in-degree and an out-degree score. The out-degree score denotes the number of connections the node initiates, and the in-degree score denotes the number of connections the node receives. The overall degree score is the sum of the in-degree and the out-degree scores.
+
+Additionally, a network's **density** is a useful statistic to understand, but it is hard to put in context. The calculation is the number of edges divided by the total possible number of edges. A network density of 1 means that all nodes are connected to each other. This is common in small friend group networks, but less common in real-world networks. It would not make sense for a network to be perfectly dense, and optimal density is hard to define. The endline network has a density of `{r} igraph::edge_density(g)`.
+
+## Centrality findings
+
+The centrality statistics are displayed below in Table 1. Unsurprisingly there is a fair amount of overlap among organizations that rate highly in each centrality statistic. The organizations that appear to be most influential in this network include:
+
+* Progressive Impact Organization for Community Development
+* Connected Development (CODE)
+* Accountability Lab Nigeria
+* BudgIT Foundation
+* Centre for Information Technology and Development (CITAD)
+* HumAngle Media Limited
+
+The bridging organizations have a high betweenness score. Connected Development (CODE) has the highest betweenness and harmonic centrality.
+
+Interestingly, the Independent Corrupt Practices Commission (ICPC) has the most connections in the network, but they have 0 out-degree connections and do not score consistently high across the centrality statistics. 
+
+
+```{r}
+DT::datatable(centrality_end,
+              caption = htmltools::tags$caption(
+    style = 'caption-side: bottom; text-align: left;',
+    'Table 1: ', htmltools::em('Centrality statistics for organizations included in the Endline network analysis sample.')
+  ))
+
+```
+
+# Network visualization
+
+Network maps are a great way to see how a network is constructed, and of what it is constructed.
+
+Below is the whole network followed by the network with each of its grantee subgroups highlighted. 
+
+*I see acronyms in the baseline report graphics, but I'm not sure where the acronym list is. Insert acronyms for the full names so these graphics make more sense at some point before finalizing.*
+
+::: {.panel-tabset}
+
+## The Whole Network
+
+```{r}
+
+#| out-width: 100%
+#| fig-align: "center"
+
+subtitle <- "<span style = 'color:#0964B0;'>Behavior Change Cohort</span>, <span style = 'color:#B5984F;'>Media and Journalism Cohort</span>, <span style = 'color:#E17F48;'>Criminal Justice Cohort</span>, <br><span style = 'color:#5B507A;'>JoinBodi Cohort</span>, <span style = 'color:#000000;'>Non-grantee</span>" 
+
+
+#Main graph
+ggraph(g, layout = "stress") +
+  geom_edge_link0(edge_color = "grey66", edge_linewidth = .2, alpha = .6
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")) +
+  geom_node_point(aes(fill = cohort, size = degree, shape = grantee), color = "white") +
+  geom_node_point(aes(size = degree, shape = grantee, color = cohort), alpha = .7) +
+  #geom_node_text(aes(filter = degree >= 9, label = names_pretty), size = 4, repel = TRUE) +
+  scale_size(range = c(1, 6)) +
+  scale_color_manual(values = palette)+
+  labs(title = "The Whole Network"
+       , subtitle = subtitle)+
+  theme_graph() +
+  theme(legend.position = "bottom"
+        , plot.subtitle = element_markdown()) +
+  guides(color = "none", fill = "none")
+
+```
+
+## Behavior Change
+
+```{r}
+ggraph(g, layout = "stress") +
+  geom_edge_link0(edge_color = "grey66", edge_linewidth = .2, alpha = .6
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")) +
+  geom_node_point(aes(size = degree, shape = grantee), color = "white")+
+  geom_node_point(aes(size = degree, shape = grantee, color = ifelse(group == "Behavior Change", "Behavior Change", "Other")), alpha = .6)+
+  geom_node_text(aes(label = ifelse(group == "Behavior Change", names_pretty, NA)), size = 3, repel = TRUE) +
+  scale_color_manual(values = c("Behavior Change" = palette[[1]], "Other" = "lightgrey")) +
+  scale_size(range = c(1, 6)) +
+  labs(title = "<span style = 'color:#0964B0;'>Behavior Change Cohort</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+```
+
+## Media and Journalism
+
+```{r}
+#Media and Journalism subgraph on g
+ggraph(g, layout = "stress") +
+  geom_edge_link0(edge_color = "grey66", edge_linewidth = .2, alpha = .6
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")) +
+  geom_node_point(aes(size = degree, shape = grantee), color = "white")+
+  geom_node_point(aes(size = degree, shape = grantee, color = ifelse(group == "Media and Journalism", "Media and Journalism", "Other")), alpha = .6)+
+  geom_node_text(aes(label = ifelse(group == "Media and Journalism", names_pretty, NA)), size = 3, repel = TRUE) +
+  scale_color_manual(values = c("Media and Journalism" = palette[[5]], "Other" = "lightgrey")) +
+  scale_size(range = c(1, 6)) +
+  labs(title = "<span style = 'color:#B5984F;'>Media and Journalism Cohort</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+```
+
+## Criminal Justice
+
+```{r}
+#Criminal Justice subgraph on g
+ggraph(g, layout = "stress") +
+  geom_edge_link0(edge_color = "grey66", edge_linewidth = .2, alpha = .6
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")) +
+  geom_node_point(aes(size = degree, shape = grantee), color = "white")+
+  geom_node_point(aes(size = degree, shape = grantee, color = ifelse(group == "Criminal Justice", names_pretty, "Other")))+
+  geom_node_text(aes(label = ifelse(group == "Criminal Justice", names_pretty, NA)), size = 3, repel = TRUE) +
+  scale_color_manual(values = c("Criminal Justice" = palette[[2]], "Other" = "lightgrey")) +
+  scale_size(range = c(1, 6)) +
+  labs(title = "<span style = 'color:#E17F48;'>Criminal Justice Cohort</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+
+```
+
+## JoinBodi Subgraph
+
+```{r}
+#JoinBodi subgraph on g
+ggraph(g, layout = "stress") +
+  geom_edge_link0(edge_color = "grey66", edge_linewidth = .2, alpha = .6
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")) +
+  geom_node_point(aes(size = degree, shape = grantee), color = "white")+
+  geom_node_point(aes(size = degree, shape = grantee, color = ifelse(group == "JoinBodi", "JoinBodi", "Other")), alpha = .6)+
+  geom_node_text(aes(label = ifelse(group == "JoinBodi", names_pretty, NA)), size = 3, repel = TRUE) +
+  scale_color_manual(values = c("JoinBodi" = palette[[5]], "Other" = "lightgrey")) +
+  scale_size(range = c(1, 6)) +
+  labs(title = "<span style = 'color:#619CFF;'>JoinBodi Cohort</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+```
+:::
+
+The below graphic allows the reader to explore the network by zooming in and out, clicking on individual nodes, and selecting nodes by their id from a dropdown in the top left.
+
+```{r}
+
+#| out-width: 100%
+#| fig-cap: "Click on a node to see the organization name and centrality statistics"
+
+V(g)$group <- V(g)$cohort
+V(g)$title <- paste0("<b>Org:</b> ", V(g)$name, "<br><b>Cohort:</b> ", V(g)$cohort
+                     , "<br><b>Degree:</b> ", V(g)$degree, "<br><b>Between:</b> ", V(g)$betweenness                     , "<br><b>Centrality:</b> ", V(g)$centrality, "<br><b>Eigen:</b> ", V(g)$eigen)
+V(g)$degree <- igraph::degree(g)
+V(g)$betweenness <- round(igraph::betweenness(g), digits = 2)
+V(g)$centrality <- round(igraph::harmonic_centrality(g), digits = 2)
+V(g)$eigen <- round(igraph::eigen_centrality(g)$vector, digits = 2)
+V(g)$value <- log10(igraph::degree(g))
+
+igraph <- toVisNetworkData((g))
+visNetwork(nodes = igraph$nodes 
+           , edges = igraph$edges
+           , main = "Endline Network") |> 
+  visEdges(arrows = "to") |> 
+  visOptions(highlightNearest = TRUE
+             , selectedBy = "group"
+             , nodesIdSelection = TRUE) |> 
+  visLegend() |> 
+  visLayout(randomSeed = 415)
+
+```
+
+
+# Observations for Case Study Selection and Further Analysis
+
+## Case Study
+The organizations highlighted in each of the centrality statistics are presented here. In the design, the SNA team highlighted that Degree Centrality, Closeness, and Betweenness would be used to help identify case studies for the next phase of research. Upon analyzing the data, the team recommends additionally including the Eigen Value as the Eigen value highlights those organizations that are connected to highly connected organizations in the network. 
+It should also be noted that Closeness is not included in the table below. The Closeness statistic works well when a network is connected (i.e., there are no nodes disconnected to the rest of the network). This network has a few nodes that are disconnected from the rest of the network. In such cases, the Harmonic Centrality statistic is commonly used in place of Closeness. For this reason, the team recommends using Harmonic Centrality rather than Closeness to help identify organizations for case studies. 
+
+### Top 10 Organizations by Centrality Statistic
+```{r}
+
+table_10 <- width(table_10, j = 1:3, width = 2)
+
+table_10 <- border_inner_v(table_10, officer::fp_border(color = "grey", width = .5))
+
+table_10
+```
+Based on these statistics, organizations that stand out, in particular, include: **Connected Development (CODE), Progressive Impact Organization for Community Development, Wole Soyinka Centre for Investigative Journalism (WSCIJ), and Daily Trust Foundation.**
+
+## Further Analysis
+In addition to the calculating the statistics on the global network, further analysis will provide simulated, similar networks to compare global statistics. This should help us know if the network statistics calculated here are what we should expect.
+
+Further analysis will also focus on cohort level (local) network statistics and cross-cohort linkages. 

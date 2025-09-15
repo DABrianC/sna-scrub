@@ -1,0 +1,29 @@
+---
+title: "Annex 4. Organizations in the Endline Social Network"
+format:
+  html:
+    toc: true
+    css: prep/styles.css
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+```{r}
+
+source(here::here("./scripts/01 descriptives.R"))
+
+```
+
+```{r}
+
+orgs_acs <- acronyms_types |> 
+  select("Organization" = organization
+         , "Acronym" = acronym) |> 
+  flex_fun()
+
+orgs_acs
+```

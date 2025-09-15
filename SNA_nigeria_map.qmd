@@ -1,0 +1,43 @@
+---
+title: "Annex 2: Geographic Network Map"
+
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+```{r}
+source(here::here("./scripts/01 descriptives.R"))
+source(here::here("./scripts/01_geographic_network.R"))
+
+```
+
+This is a version of the network that maps each organization geographically to the state in which their headquarters is located. Previous versions of the network visualization attempted to provide a clean and meaningful graphic on the screen. It does this by keep each organization close to the organizations that it is connected to but not too close to all the other organizations. It used a "stress" layout to achieve this by positioning the nodes so that the visual distance between them in the visualization reflects their true relationship distance in the network. In short, closely related organizations will appear closer in the visualization. This method tries to represent distances between organizations as faithfully as possible in 2D space, and it does not take into account geography.
+
+This contrasts with the below version of the network which explicitly takes geography into account.
+
+### The points on the map
+
+The organizations are located in the state where they are headquartered. Using survey responses, we were able to locate 164 organizational headquarters within states in Nigeria. The map does not include any organizations headquartered outside of Nigeria. To place organizations at specific points, we calculated the geographic centers of each state and then added random jittering so that points are not on top of each other. If you zoom in on Kano State, all organizations who listed Kano as their headquarter state located near the geographic center of Kano, for example.
+
+### The shading of the states on the map
+
+The states are shaded based on how many organizations reported that they work in a state -- with darker shading meaning more organizations work in a state. The default shows the shading for the entire network.
+
+### Interactivity on the map
+
+You can view different layers using the map layer widget on the left side of the map. If you click on it you can change the state shading from Overall to any of the four cohorts to see which cohorts are most active in which states. If you click on a state, it will tell you how many organizations work in the state for the cohort layer that you are viewing. Similarly, you can view cohort organizations or connections by checking the appropriate boxes in the map layer widget. You can zoom in on the map as needed, click on an organization to see its name, and click on a connection line to identify the organizations at either endpoint.
+
+## The Endline Network Mapped by State in Nigeria
+
+```{r, echo=FALSE, comment=NA, message=FALSE, warning=FALSE, error=FALSE, fig.width=10, fig.align="center", out.width="100%"}
+
+tm
+```

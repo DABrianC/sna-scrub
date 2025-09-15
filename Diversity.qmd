@@ -1,0 +1,255 @@
+---
+title: "Diversity"
+format:
+  html:
+    toc: true
+    css: prep/styles.css
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+```{r}
+source(here::here("./prep/prep.r"))
+source(here::here("./scripts/00 cleaning script.R"))
+source(here::here("./scripts/01 descriptives.R"))
+source(here::here("./scripts/01 analysis script.R"))
+source(here::here("./scripts/01 analysis subgraphs script.R"))
+source(here::here("./scripts/01_geographic_network.R"))
+
+```
+
+::: definition_box
+**Diversity** is defined as the breadth and number of actors, organization types, and historically disadvantaged groups engaged in the ecosystem at different levels and in different sectors.
+:::
+
+## Types of organizations
+
+[**Finding 8: The On Nigeria accountability network is made up primarily of NGOs but also has similar amounts of MDAs and private businesses.**]{style="color: #00457c;"}
+
+The On Nigeria accountability ecosystem is made up of numerous actors working across the different facets of anticorruption and accountability. Figure 10 highlights the different types of organizations in the network.
+
+```{r, fig.cap="Figure 10. The On Nigeria network organizations classified as Private Businesses, NGOs, INGOs, or MDAs."}
+
+df_orgs_ft
+    
+```
+
+The most common type of organization is the NGO which makes up `r ngo_orgs` percent[^diversity-1] of all the organizations. This represents a `r 63 - ngo_orgs` percent decrease in the percent of NGOs in the endline network compared to the baseline network. The next most frequent organization type are MDAs, making up `r govt_orgs` percent[^diversity-2] which is consistent with the baseline network (24 percent). `r private_orgs` percent[^diversity-3] of actors are private businesses, an increase of `r private_orgs-13` percent from the baseline. Finally, international NGOs (INGOs) make up `r ingo_orgs` percent[^diversity-4] of the endline network. These types of organizations are spread around the network as depicted in Figure 11.
+
+[^diversity-1]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="NGO"])` organizations
+
+[^diversity-2]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="MDA"])` organizations
+
+[^diversity-3]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="Private Business"])` organizations
+
+[^diversity-4]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="INGO"])` organizations
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%", fig.cap="Figure 11. The entire network displayed with cohorts by color and type of organization by shape."}
+
+
+#| fig-align: "center"
+#| fig-width: 12
+#| out-width: 100%
+
+subtitle <- "<span style = 'font-size:18pt; color:#0964B0;'>**Behavior Change Cohort**</span>, <span style = 'font-size:18pt; color:#B5984F;'>**Media and Journalism Cohort**</span>, <span style = 'font-size:18pt; color:#E17F48;'>**Criminal Justice Cohort**</span>, <br><span style = 'font-size:18pt; color:#5B507A;'>**JoinBodi Cohort**</span> <span style = 'font-size:18pt;'> with shapes defining the type of organzation</span>" 
+
+
+#Main graph
+ggraph(g_non, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")) +
+  geom_node_point(aes(size = degree, shape = desc_org), color = "white") +
+  geom_node_point(aes(size = degree, shape = desc_org, color = cohort)) +
+  #geom_node_text(aes(filter = degree >= 9, label = names_pretty), size = 4, repel = TRUE) +
+  scale_size(range = c(2, 12)) +
+  scale_color_manual(values = palette)+
+  scale_shape_manual(values = c("Private Business" = 17, "NGO" = 16, "MDA" = 15, "INGO" = 18))+
+  labs(title = "The Endline On Nigeria Accountability Network"
+       , subtitle = subtitle
+       , shape = "Type of Org."
+       , size = "Degree")+
+  theme_graph() +
+  theme(legend.position = "bottom"
+        , legend.text = element_text(size = 12)
+        , legend.title = element_text(size = 14)
+        , plot.subtitle = element_markdown()
+        , plot.title = element_text(size = 20)) +
+  guides(color = "none", fill = "none", shape = guide_legend(nrow=2, override.aes = list(size = 5))
+  )
+
+```
+
+[**Finding 9. rganizations in the accountability ecosystem use a diverse combination of approaches in their work on social accountability and anticorruption.**]{style="color: #00457c;"}
+
+When asked to select one or more of three social accountability approaches that their organization applies to their On Nigeria work, Approach C was the most frequently selected. The three approaches to choose among were:
+
+-   *Approach A:* My organization’s work seeks to hold governments accountable by supporting participation in formal political processes, like elections, and/or by supporting citizens to organize to collectively lobby government officials and/or agencies, demand explanations, or raise awareness of government performance.
+
+-   *Approach B:* My organization’s work seeks to develop and/or support internal checks and oversight processes within and between government officials or institutions, so that they can hold one another accountable. We help state actors investigate and sanction irregularities, such as corrupt behavior or procedural violations.
+
+-   *Approach C:* My organization’s work seeks to create and/or support spaces or processes in which citizens participate in, or directly oversee, the performance of government officials, agencies, and/or institutions.
+
+Figure 12 shows the results for counting up how many times each approach - a, b, or c - was selected. However, the majority of respondents selected multiple approaches with the combination of approaches A and C and all of them being the most frequently selected.
+
+::: panel-tabset
+## Social Accountability Approaches, unique occurrences
+
+```{r, fig.cap="Figure 12. Approach C was the most frequently selected social accountability appraoch."}
+
+flex_fun(data = df_soc_acct_approaches_totals)
+
+
+```
+
+## Social Accountability Approaches Selected
+
+```{r, fig.cap="Figure 13. The majority of respondents selected multiple social accountability approaches as being used on their On Nigeria work."}
+
+flex_fun(data = df_soc_acct_approach)
+```
+:::
+
+## GESI-related organizations
+
+[**Finding 10: GESI-related organizations make up roughly one-third of the organizations in the On Nigeria accountability network.**]{style="color: #00457c;"}
+
+For the purposes of this report, a GESI-related organization is one that may be women-led, may specifically focus on GESI efforts, or may have a general focus on disadvantaged populations. There was no comprehensive data collection on which organizations were GESI-focused, but by reviewing the organizations in the network we identified 54 organizations that are either women-led, GESI-focused or GESI-related. Figure 14 highlights how many organizations were classified as each type.
+
+```{r, fig.cap="Figure 14. GESI-related organizations make up 31 percent of the On Nigeria ecosystem organizations. N=172."}
+
+GESI_orgs_ft
+
+```
+
+Overall, these organizations make up about one-third of the organizations in the network. Figure 15 shows where they are in the network map, and Figure 16 highlights that the majority of GESI-related organizations are peripheral organizations in the network. WSCIJ, CODE, DT, and ALN are exceptions to this as they are more centrally located as hubs in the network.
+
+::: panel-tabset
+## GESI-organizations
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%", fig.cap="Figure 15. The GESI-related organizations are diffused across the network."}
+# Gesi-focused connections
+# all gesi nodes and their connections
+
+V(g_non)$flag <- V(g_non)$women_led=="Yes"| V(g_non)$gesi_focus=="Yes" | V(g_non)$gen_focus_serves_disadv_pop=="Yes"
+
+subtitle <- "<span style = 'font-size:18pt; color:#B22222;'>**GESI-related Organizations**</span>" 
+
+ggraph(g_non, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                         , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                         , ends = "last", type = "closed")) +
+  geom_node_point(aes(size = degree, shape = desc_org), color = "white") +
+  geom_node_point(aes(size = degree, shape = desc_org, color = flag)) +
+  geom_node_text(aes(filter = flag %in% TRUE, label = acronym), size = 4, repel = TRUE) +
+  scale_size(range = c(2, 12)) +
+  scale_color_manual(values = c("#B22222", "grey"))+
+  scale_shape_manual(values = c("Private Business" = 17, "NGO" = 16, "MDA" = 15, "INGO" = 18))+
+  labs(title = "The Endline On Nigeria Accountability Network"
+       , subtitle = subtitle
+       , shape = "Type of Org."
+       , size = "Degree"
+       , color = "GESI")+
+  theme_graph() +
+  theme(legend.position = "bottom"
+        , legend.text = element_text(size = 12)
+        , legend.title = element_text(size = 14)
+        , plot.subtitle = element_markdown()
+        , plot.title = element_text(size = 20)) +
+  guides(color = "none", fill = "none", shape = guide_legend(nrow=2, override.aes = list(size = 5))
+  )
+```
+
+## Centrality of GESI-organizations
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%", fig.cap="Figure 16. GESI-related organizations are primarily periferal organizations in the network."}
+
+ggraph(g_non, layout = "centrality", cent = igraph::betweenness(g_non)) +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                         , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                         , ends = "last", type = "closed")) +
+  geom_node_point(aes(size = degree, shape = desc_org), color = "white") +
+  geom_node_point(aes(size = degree, shape = desc_org, color = flag)) +
+  geom_node_text(aes(filter = flag %in% TRUE, label = acronym), size = 4, repel = TRUE) +
+  scale_size(range = c(2, 12)) +
+  scale_color_manual(values = c("#B22222", "grey"))+
+  scale_shape_manual(values = c("Private Business" = 17, "NGO" = 16, "MDA" = 15, "INGO" = 18))+
+  labs(title = "The Endline On Nigeria Accountability Network"
+       , subtitle = subtitle
+       , shape = "Type of Org."
+       , size = "Degree"
+       , color = "GESI")+
+  theme_graph() +
+  theme(legend.position = "bottom"
+        , legend.text = element_text(size = 12)
+        , legend.title = element_text(size = 14)
+        , plot.subtitle = element_markdown()
+        , plot.title = element_text(size = 20)) +
+  guides(color = "none", fill = "none", shape = guide_legend(nrow=2, override.aes = list(size = 5))
+  )
+```
+:::
+
+[**Finding 11: Youth face particular challenges when trying to participate in the accountability ecosystem. These include literacy, language barriers, and skills gaps. But at least some ecosystem actors – especially On Nigeria grantees – are leveraging capacity building and awareness raising activities to help youth overcome those challenges.**]{style="color: #00457c;"}
+
+There are a variety of historically disadvantaged groups in Nigeria. These include women, youth, and PWD, among others. Several grantees highlighted how their programming aims to help youth overcome some of the barriers they face. Their initiatives comprise anticorruption clubs to reach illiterate youth, translating important policies to local languages for non-English speaking groups, and teaching entrepreneurial skills to youth with a lack of education.
+
+During an FGD, a JoinBodi grantee discussed that in Zamfara state, it can be difficult for youth to participate in the accountability ecosystem, and somewhat relatedly, varied languages across the country and levels of English literacy can also be a barrier. They addressed these through their anticorruption clubs at schools and through translations of government policies such as the Whistleblower policy into Kanuri and Hausa.
+
+One Behavior Change grantee also noted that youth without the skills to make sufficient income can get pulled into cybercrime rather than roles that allow them to act with accountability and integrity. This grantee teaches digital and entrepreneurial skills to youth. Palace of Priests and Al-Habibiyyah Islamic Society are also working to address issues for Pentacostal and Islamic groups by ensuring their religious leaders are able to act with and preach about integrity.
+
+[**Finding 12: The extent to which ecosystem actors successfully engage and include other historically disadvantaged groups in accountability and anticorruption work varies widely.**]{style="color: #00457c;"}
+
+A non-grantee highlighted that sometimes teeth actors do not pick up where voice actors leave off when it comes to historically disadvantaged communities. They outlined a specific issue where they worked with a partner to amplify a story about how gender-based violence particularly affects people with disabilities. They received notification from the ICPC that something would be done, however nothing concrete was ever released from the ICPC to address the issue. They did not speculate as to why this was the case.
+
+::: box
+The level of awareness and media commitments to issue of abuses and injustice against person with disability is very low. And one of the things that we equip media houses across Nigeria to be able to identify injustices, violence and abuses of human rights against persons with disability who are able to train over 100 across the nation. And today we find out that many media houses are interested because one of the things that ignorance of the media houses was why they were not very committed to issue of investigative journalism around human rights abuses of persons with disability. So some of the organization particularly in our collaboration on understanding data use how to find data with regards to public fundings that were mismanaged in that area where we have rehabilitation center. Some of the funding meant for persons with disability that was siphoned because nobody was actually speaking up or raising voices for these people. –NG1.1
+:::
+
+This non-grantee also noted that a lot of media actors were not aware of or didn’t understand issues affecting people with disabilities. This lack of awareness meant that they were not motivated to investigate issues affecting people with disabilities. Similarly, a Behavior Change grantee noted that, "...I'm not sure that too many groups have understood how to include previously disadvantaged groups, and I'm not sure that previously disadvantaged groups have also been able to better engage in what is going on."
+
+Among the five organizations that participated in FGDs and had specific goals of social inclusion, four described results that benefited historically disadvantaged groups.The Joinbodi grantees succeeded in supporting the Independent National Electoral Commission (INEC) gender and inclusion desks, and in Imo state where they spread messages of social inclusion, for the first time a woman nearly won election for governor. A media and journalism grantee trained female journalists who were able to go on to publish investigative reports which the grantee also amplified. One of these reports focused on a doctor providing illegal abortions to minors, and as a result of the report the doctor was arrested. A non-grantee not only trained female journalists, but the trainees went on to open their own women-run media organization.
+
+## Geographic diversity
+
+[**Finding 13: Organizations in the accountability network work throughout Nigeria, but have a particular focus on Abuja, Lagos, and to a lesser extent, Kano state. There are some variations across cohorts in terms of grantees’ geographical focus.**]{style="color: #00457c;"}
+
+Organizations in our accountability network work across Nigeria, but are primarily clustered in Abuja (Federal CT ), Lagos, and to a lesser extent Kano States. Figure 13 shows which states organizations work in with dark colors meaning more organizations reported having activities there.
+
+```{r, fig.align="center", fig.width = 8, fig.height=6, fig.cap="Figure 15. Most organizations work in Abuja, Lagos, or Kano, but some organizations work in all states." }
+
+dat6_states_work_all_sf$states_work <- dat6_states_work_all_sf$states_work %>% 
+  str_wrap(width = 20)
+
+tmap::tmap_mode("plot") +
+  tmap::tm_shape(dat6_states_work_all_sf
+           , name = "Overall") +
+  tmap::tm_polygons(col = "total", 
+                            , palette = carto_pal(6, "Burg"), na.show = FALSE, textNA = "",
+                    title = "# of Orgs. working in State") +
+  tm_text("states_work", size = .8
+          , col = "black"
+          , bg.color = "white"
+          , bg.alpha = 1
+          ) +
+  tm_title("States Where Endline SNA Actors Work", position = tm_pos_out(cell.h = "center", cell.v = "top", pos.h = "left"))+
+  tm_layout(
+  #title = 
+  title.size = 1.5,             # Size of the title text
+ # title.position = c("left", "top"),  # Position: c(horizontal, vertical)
+  title.color = "black",     # Title text color
+  title.fontface = "bold"       # Font style
+) 
+```
+
+The work of most of the cohorts is similarly distributed across Nigeria. However, the Criminal Justice cohort's work is more concentrated in Abuja than the other cohorts. The work of JoinBodi is the most distributed across the country with Media and Journalism also well distributed. Figure 14 shows which states each cohort is most active in with darker colors meaning more organizations are active in a state.
+
+```{r, fig.align="center", fig.width = 8, fig.height=6, fig.cap="Figure 16. The JoinBodi cohort is the most distributed across Nigeria while the Criminal Justic cohort is the most concentrated in Abuja."}
+
+knitr::include_graphics("anim_map_cohorts.gif")
+
+```

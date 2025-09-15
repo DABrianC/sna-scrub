@@ -1,0 +1,233 @@
+---
+title: "SNA report_neighborhoods"
+author: "Brian Calhoon and Randi Rumbold"
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+# Neighborhoods
+
+```{r}
+source(here::here("./prep/prep.r"))
+source(here::here("./scripts/00 cleaning script.R"))
+source(here::here("./scripts/01 analysis script.R"))
+source(here::here("./scripts/01 analysis subgraphs script.R"))
+
+```
+
+Within this network of anti-corruption organizations, the grantees work within four thematic areas:
+
+-   Joinbodi
+-   Behavior Change
+-   Criminal Justice, and
+-   Media and Journalism.
+
+To better understand each of these grantees and those non-grantees who are associated with each of them, the evaluation team created four **neighborhoods**, one for each of the cohorts. Each neighborhood consists of the grantee organizations who are officially part of this cohort, and all other organizations in the network -- grantee and non-grantee -- who are first order connections. Below, each neighborhood is presented visually and statistically to identify its key organizations.
+
+## Joinbodi
+
+The Joinbodi neighborhoods consists of `{r} gorder(joinbodi_nbhd)` organizations and `{r} gsize(joinbodi_nbhd)` connections. The organizations are made up of `{r} sum(V(joinbodi_nbhd)$cohort == "JoinBodi")` that are JoinBodi grantees, `{r} sum(V(joinbodi_nbhd)$cohort %in% c("Media and Journalism", "Behavior Change", "Criminal Justice"))` that are grantees in one of the other three cohorts, and `{r} sum(V(joinbodi_nbhd)$cohort == "Non Grantee")` non-grantees.
+
+```{r}
+DT::datatable(joinbodi_nbhd_centrality_scores,
+              caption = htmltools::tags$caption(
+    style = 'caption-side: bottom; text-align: left;',
+    'Table 1: ', htmltools::em('Centrality statistics the JoinBodi neighborhood.')
+  ))
+
+```
+
+### JoinBodi neighborhood network visualization
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%"}
+ggraph(joinbodi_nbhd, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed"), threshold = .4, n_cycle = 2) +
+  geom_node_point(aes(size = betweenness, shape = grantee), color = "white")+
+  geom_node_point(aes(size = betweenness, shape = grantee, color = ifelse(group == "JoinBodi", "JoinBodi", "Other")), alpha = .8)+
+  geom_node_text(aes(label = ifelse(group == "JoinBodi", names_pretty, NA)), size = 3, repel = TRUE) +
+  scale_color_manual(values = c("JoinBodi" = palette[[3]], "Other" = "grey")) +
+  scale_size(range = c(2, 6)) +
+  labs(title = "<span style = 'color:#5B507A;'>JoinBodi neighborhood</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+
+```
+
+### JoinBodi: Top 10 Organizations by Centrality Statistic
+
+```{r}
+
+flex_fun(scores_table_joinbodi)
+
+```
+
+### Expectations for similar networks
+
+```{r}
+
+joinbodi_nbhd_network_stats_table
+
+
+```
+
+## Behavior Change
+
+The Behavior Change neighborhoods consists of `{r} gorder(bechange_nbhd)` organizations and `{r} gsize(bechange_nbhd)` connections. The organizations are made up of `{r} sum(V(bechange_nbhd)$cohort == "Behavior Change")` that are Behavior Change grantees, `{r} sum(V(bechange_nbhd)$cohort %in% c("Media and Journalism", "JoinBodi", "Criminal Justice"))` that are grantees in one of the other three cohorts, and `{r} sum(V(bechange_nbhd)$cohort == "Non Grantee")` non-grantees.
+
+```{r}
+DT::datatable(bechange_nbhd_centrality_scores,
+              caption = htmltools::tags$caption(
+    style = 'caption-side: bottom; text-align: left;',
+    'Table 1: ', htmltools::em('Centrality statistics the Behavior Change neighborhood.')
+  ))
+
+```
+
+### Behavior Change neighborhood network visualization
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%"}
+ggraph(bechange_nbhd, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed"), threshold = .4, n_cycle = 2) +
+  geom_node_point(aes(size = betweenness, shape = grantee), color = "white")+
+  geom_node_point(aes(size = betweenness, shape = grantee, color = ifelse(group == "Behavior Change", "Behavior Change", "Other")), alpha = .8)+
+  geom_node_text(aes(label = ifelse(group == "Behavior Change", names_pretty, NA)), size = 3, repel = TRUE) +
+  scale_color_manual(values = c("Behavior Change" = palette[[1]], "Other" = "grey")) +
+  scale_size(range = c(1, 6)) +
+  labs(title = "<span style = 'color:#0964B0;'>Behavior Change neighborhood</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+
+```
+
+### Behavior Change: Top 10 Organizations by Centrality Statistic
+
+```{r}
+
+flex_fun(scores_table_bechange)
+
+```
+
+### Expectations for similar networks
+
+```{r}
+
+bechange_nbhd_network_stats_table
+
+
+```
+
+## Criminal Justice
+
+The Criminal Justice neighborhoods consists of `{r} gorder(crimjust_nbhd)` organizations and `{r} gsize(crimjust_nbhd)` connections. The organizations are made up of `{r} sum(V(crimjust_nbhd)$cohort == "Criminal Justice")` that are Criminal Justice grantees, `{r} sum(V(crimjust_nbhd)$cohort %in% c("Media and Journalism", "Behavior Change", "JoinBodi"))` that are grantees in one of the other three cohorts, and `{r} sum(V(bechange_nbhd)$cohort == "Non Grantee")` non-grantees.
+
+```{r}
+DT::datatable(crimjust_nbhd_centrality_scores,
+              caption = htmltools::tags$caption(
+    style = 'caption-side: bottom; text-align: left;',
+    'Table 1: ', htmltools::em('Centrality statistics the Criminal Justice neighborhood.')
+  ))
+
+```
+
+### Criminal Justice neighborhood network visualization
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%"}
+ggraph(crimjust_nbhd, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed"), threshold = .4, n_cycle = 2) +
+  geom_node_point(aes(size = betweenness, shape = grantee), color = "white")+
+  geom_node_point(aes(size = betweenness, shape = grantee, color = ifelse(group == "Criminal Justice", "Criminal Justice", "Other")), alpha = .8)+
+  geom_node_text(aes(label = ifelse(group == "Criminal Justice", names_pretty, NA)), size = 3, repel = TRUE) +
+  scale_color_manual(values = c("Criminal Justice" = palette[[2]], "Other" = "grey")) +
+  scale_size(range = c(2, 6)) +
+  labs(title = "<span style = 'color:#E17F48;'>Criminal Justice neighborhood</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+
+```
+
+### Criminal Justice: Top 10 Organizations by Centrality Statistic
+
+```{r}
+
+flex_fun(scores_table_crimjust)
+
+```
+
+### Expectations for similar networks
+
+```{r}
+
+crimjust_nbhd_network_stats_table
+
+
+```
+
+## Media and Journalism
+
+The Media and Journalism neighborhoods consists of `{r} gorder(medjourn_nbhd)` organizations and `{r} gsize(medjourn_nbhd)` connections. The organizations are made up of `{r} sum(V(medjourn_nbhd)$cohort == "Media and Journalism")` that are Media and Journalism grantees, `{r} sum(V(medjourn_nbhd)$cohort %in% c("JoinBodi", "Behavior Change", "Criminal Justice"))` that are grantees in one of the other three cohorts, and `{r} sum(V(medjourn_nbhd)$cohort == "Non Grantee")` non-grantees.
+
+```{r}
+DT::datatable(medjourn_nbhd_centrality_scores,
+              caption = htmltools::tags$caption(
+    style = 'caption-side: bottom; text-align: left;',
+    'Table 1: ', htmltools::em('Centrality statistics the Media and Journalism neighborhood.')
+  ))
+
+```
+
+### Media and Journalism neighborhood network visualization
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%"}
+ggraph(medjourn_nbhd, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")
+                  , threshold = .4, n_cycle = 2) +
+  geom_node_point(aes(size = betweenness, shape = grantee), color = "white")+
+  geom_node_point(aes(size = betweenness, shape = grantee, color = ifelse(group == "Media and Journalism", "Media and Journalism", "Other")), alpha = .8)+
+  geom_node_text(aes(label = ifelse(group == "Media and Journalism", names_pretty, NA)), size = 3, repel = TRUE) +
+  scale_color_manual(values = c("Media and Journalism" = palette[[4]], "Other" = "grey")) +
+  scale_size(range = c(1, 6)) +
+  labs(title = "<span style = 'color:#B5984F;'>Media and Journalism neighborhood</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+```
+
+### Media and Journalism: Top 10 Organizations by Centrality Statistic
+
+```{r}
+
+flex_fun(scores_table_medjourn)
+
+```
+
+### Expectations for similar networks
+
+```{r}
+
+medjourn_nbhd_network_stats_table
+
+
+```

@@ -1,0 +1,43 @@
+---
+title: "Scale"
+format:
+  html:
+    toc: true
+    css: prep/styles.css
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+::: definition_box
+**Scale** is the extent to which ecosystem actors' work has been taken up and/or scaled to other geographies and sectors.
+:::
+
+[**Finding 18. Some ecosystem actors are reacting to emerging demand to scale their accountability initiatives, while others designed scaling efforts into their initial projects. There is evidence of grantees’ work being taken to scale in new geographies as well as at higher levels of governance.**]{style="color: #00457c;"}
+
+FGD participants highlighted how scaling was intentionally built into their activity designs and a few instances where it occurred organically. Scale was not an explicit focus in the baseline study, but it did highlight that expanding cross-cohort collaboration could be a beneficial step moving forward. The endline study did not find evidence of intentional cross-cohort collaboration.
+
+For example, the Wadata Media and Advocacy Centre (WAMAC) published and shared an investigation into the diversion of pension funds in Kano State. Due to the work's quality and its reach, WAMAC was approached by other organizations to support and conduct additional investigative reports. WAMAC was able to scale this service that it offered to clients.
+
+::: box
+.... But it \[the investigative reporting\] has led to some other organizations reaching out to us and also reaching out to them....Because initially it started like, okay, why are you investigating us? You don't like us. But to a level whereby they are now beginning to understand the importance of investigating what they are doing, trying to prove to be accountable.*-Media and Journalism FGD participant*
+:::
+
+Similarly, the COMPPART Foundation, a non-grantee, became known for their sensitization work in Akwa Ibom State and was invited to support similar work in Kaduna State.
+
+A Criminal Justice grantee has had success getting government buy-in on their Transparency and Integrity Index, and now provides advice to other CSOs looking to collaborate with MDAs.
+
+::: box
+And so with this collaboration, especially for the transparency and integrity index, we are already seeing some sister civil society organization. Actually before coming on this meeting, a civil society organization was at the office to say that how do we get government to be part of our programs? How do we even get to use government facilities? You know, the organization is pursuing efforts at looking towards getting the whistleblower bill passed, you know, and so we share ideas and see how we can come up with a program together and all of that. So we already seen some civil society organizations and even a government agency. *-Criminal Justice FGD participant*
+:::
+
+Several organizations designed their collaborations to reach broad/national audiences. For example, both CJID and Integrity selected their partners for their collaborations to ensure the work would be enacted to scale. CJID partnered with the monitoring and evaluation arm at the Ministry of Budget and National Planning so that their work in constituency project tracking could be conducted across the country rather than in one localized area. Integrity brought their SME governance standards to the Lagos Chamber of Commerce and the UN Global Compact due to their connection with thousands, and millions, respectively, of SMEs.
+
+::: box
+But in our case, we built it with scale in mind, which is why I can be telling you of getting connected to 6 million SMEs. Lagos Chamber of Commerce has 20,000 SME members. So we, we started with scale in mind. We, we partnered with UN Global Compact precisely because of scale. If we look at a bank like Access bank with the thousands of SMEs they have. So each of these partners were carefully selected in order to make sure that the path to scale would be very clear. We're doing this from an unfair advantage being that we've been working on another project since 2012 which had like 14 government agencies and so on. And we've seen what it takes actually to get to scale, which is why on this project we could be more deliberate about how we wanted to set up the partnerships. So it was set up with scale in mind from the beginning.*—Behavior Change FGD participant*
+
+So we're able to ensure that there was a gradual but firm commitment from the grassroots to anti corruption cause. And then we also use the training the trainer approach, which has also helped in expanding the work so that approach helped in mobilizing more people and sending out more of the anti corruption messages where they ordinarily wouldn't have been able to reach. *– Behavior Change FGD participant*
+:::

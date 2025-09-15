@@ -1,0 +1,336 @@
+---
+title: "Annex 3: More on Centrality Statistics"
+format:
+  html:
+    toc: true
+    css: prep/styles.css
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+```{r}
+source(here::here("./prep/prep.r"))
+source(here::here("./scripts/00 cleaning script.R"))
+source(here::here("./scripts/01 descriptives.R"))
+source(here::here("./scripts/01 analysis subgraphs script.R"))
+source(here::here("./scripts/01 analysis script.R"))
+```
+
+## Centrality Statistics
+
+Global centrality statistics help understand each node's place in the overall network and whether or not they are connected to many or few other nodes in the network. Knowing this information helps to determine if an organization may be more or less influential than other organizations in the network.
+
+Four commonly used centrality statistics are Betweenness Centrality, Closeness, Eigenvector Centrality, and Degree Centrality (overall, out, and in).
+
+**Betweenness centrality** measures the extent to which an organization is connected to other network actors that are not connected to each other. Nodes with high betweenness serve as bridges between different parts of a network.
+
+**Closeness** calculates the average distance between a node and all other nodes in a network. It is used to identify nodes that reach other nodes quickly. In disconnected networks, it may be necessary to use **Harmonic Centrality** instead.
+
+**Eigenvector Centrality** is a measure of the influence of a node in a network. Those nodes that are connected to other well-connected nodes will have high eigenvector centrality scores.
+
+**Degree Centrality** is a count of the number of connections of each node. In directed networks it can have both an **in-degree** and an **out-degree** score. The out-degree score denotes the number of connections the node initiates, and the in-degree score denotes the number of connections the node receives. The overall degree score is the sum of the in-degree and the out-degree scores.
+
+Additionally, a network's **density** is a useful statistic to understand, but it is hard to put in context. The calculation is the number of connections divided by the total possible number of connections. A network density of 1 means that all nodes are connected to each other. This is common in small, friend group networks, but less common in real-world networks. It would not make sense for a network to be perfectly dense, and optimal density is hard to define. The endline network has a density of `{r} igraph::edge_density(g_non)`.
+
+```{r}
+
+dat_all1 <- dat_all |> 
+  mutate(Density = paste0(round(Density, digits = 0), "%")
+         , 'Avg. Harmonic Centrality \n(Closeness)' = round(`Avg. Harmonic Centrality \n(Closeness)`, digits = 2)
+         , 'Avg. Betweenness' = round(`Avg. Betweenness`, digits = 2)
+         , 'Avg. Eigenvector' = round(`Avg. Eigenvector`, digits = 2))
+
+flex_fun(data = dat_all1)
+
+```
+
+## Neighborhoods
+
+```{r}
+source(here::here("./prep/prep.r"))
+source(here::here("./scripts/00 cleaning script.R"))
+source(here::here("./scripts/01 analysis script.R"))
+source(here::here("./scripts/01 analysis subgraphs script.R"))
+
+```
+
+Within this network of anti-corruption organizations, the grantees work within four thematic areas:
+
+-   Joinbodi
+-   Behavior Change
+-   Criminal Justice, and
+-   Media and Journalism.
+
+To better understand each of these grantees and those non-grantees who are associated with each of them, the evaluation team created four **neighborhoods**, one for each of the cohorts. Each neighborhood consists of the grantee organizations who are officially part of this cohort, and all other organizations in the network -- grantee and non-grantee -- who are first order connections. Below, each neighborhood is presented visually and statistically to identify its key organizations.
+
+## Joinbodi
+
+The Joinbodi neighborhoods consists of `{r} gorder(joinbodi_nbhd)` organizations and `{r} gsize(joinbodi_nbhd)` connections. The organizations are made up of `{r} sum(V(joinbodi_nbhd)$cohort == "JoinBodi")` that are JoinBodi grantees, `{r} sum(V(joinbodi_nbhd)$cohort %in% c("Media and Journalism", "Behavior Change", "Criminal Justice"))` that are grantees in one of the other three cohorts, and `{r} sum(V(joinbodi_nbhd)$cohort == "Non Grantee")` non-grantees.
+
+```{r}
+DT::datatable(joinbodi_nbhd_centrality_scores,
+              caption = htmltools::tags$caption(
+    style = 'caption-side: bottom; text-align: left;',
+    'Table 1: ', htmltools::em('Centrality statistics the JoinBodi neighborhood.')
+  ))
+
+```
+
+### JoinBodi neighborhood network visualization
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%"}
+ggraph(joinbodi_nbhd, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed"), threshold = .4, n_cycle = 2) +
+  geom_node_point(aes(size = betweenness, shape = grantee), color = "white")+
+  geom_node_point(aes(size = betweenness, shape = grantee, color = ifelse(group == "JoinBodi", "JoinBodi", "Other")), alpha = .8)+
+  geom_node_text(aes(label = ifelse(group == "JoinBodi", names_pretty, NA)), size = 3, repel = TRUE) +
+  scale_color_manual(values = c("JoinBodi" = palette[[3]], "Other" = "grey")) +
+  scale_size(range = c(2, 6)) +
+  labs(title = "<span style = 'color:#5B507A;'>JoinBodi neighborhood</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+
+```
+
+### JoinBodi: Top 10 Organizations by Centrality Statistic
+
+```{r}
+
+flex_fun(scores_table_joinbodi)
+
+```
+
+Each of the four cohorts' nodes is highlighted in the panels below.
+
+::: panel-tabset
+## Behavior Change
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%"}
+ggraph(g_non, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")
+                  , threshold = .4, n_cycle = 2) +
+  geom_node_point(aes(size = degree, shape = grantee), color = "white")+
+  geom_node_point(aes(size = degree, shape = grantee, color = ifelse(group == "Behavior Change", "Behavior Change", "Other")))+
+  geom_node_text(aes(label = ifelse(group == "Behavior Change", acronym, NA)), size = 5, repel = TRUE, check_overlap = FALSE, max.overlaps = 20) +
+  ggforce::geom_mark_hull(
+    aes(x, y, group = cohort
+        , label = cohort
+        , filter = cohort == "Behavior Change")
+    , fill = palette[[1]]
+    , label.colour = palette[[1]]
+    , label.fill = NA
+    , label.fontsize = 16
+    , con.colour = palette[[1]],
+    , concavity = 4,
+    expand = unit(2, "mm"),
+    alpha = 0.25
+  ) +
+  scale_color_manual(values = c("Behavior Change" = palette[[1]], "Other" = "grey")) +
+  scale_size(range = c(2, 6)) +
+  #labs(title = "<span style = 'color:#0964B0;'>Behavior Change Cohort</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+```
+
+## Media and Journalism
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%"}
+#Media and Journalism subgraph on g
+ggraph(g_non, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")
+                  , threshold = .4
+                  , n_cycle = 2) +
+  geom_node_point(aes(size = degree, shape = grantee), color = "white")+
+  geom_node_point(aes(size = degree, shape = grantee, color = ifelse(group == "Media and Journalism", "Media and Journalism", "Other")))+
+  geom_node_text(aes(label = ifelse(group == "Media and Journalism", acronym, NA)), size = 5, repel = TRUE, check_overlap = FALSE, max.overlaps = 20) +
+  ggforce::geom_mark_hull(
+    aes(x, y, group = cohort
+        , label = cohort
+        , filter = cohort == "Media and Journalism")
+    , fill = palette[[4]]
+    , label.colour = palette[[4]]
+    , label.fill = NA
+    , label.fontsize = 16
+    , con.colour = palette[[4]],
+    , concavity = 4,
+    expand = unit(2, "mm"),
+    alpha = 0.25
+  ) +
+  scale_color_manual(values = c("Media and Journalism" = palette[[4]], "Other" = "grey")) +
+  scale_size(range = c(2, 6)) +
+  #labs(title = "<span style = 'color:#B5984F;'>Media and Journalism Cohort</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+```
+
+## Criminal Justice
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%"}
+#Criminal Justice subgraph on g
+ggraph(g_non, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")
+                  , threshold = .4
+                  , n_cycle =2) +
+  geom_node_point(aes(size = degree, shape = grantee), color = "white")+
+  geom_node_point(aes(size = degree, shape = grantee, color = ifelse(group == "Criminal Justice", "Criminal Justice", "Other")))+
+  geom_node_text(aes(label = ifelse(group == "Criminal Justice", acronym, NA)), size = 5, repel = TRUE, check_overlap = FALSE, max.overlaps = 20) +
+  ggforce::geom_mark_hull(
+    aes(x, y, group = cohort
+        , label = cohort
+        , filter = cohort == "Criminal Justice")
+    , fill = palette[[2]]
+    , label.colour = palette[[2]]
+    , label.fill = NA
+    , label.fontsize = 16
+    , con.colour = palette[[2]],
+    , concavity = 4,
+    expand = unit(2, "mm"),
+    alpha = 0.25
+  ) +
+  scale_color_manual(values = c("Criminal Justice" = palette[[2]], "Other" = "lightgrey")) +
+  scale_size(range = c(2, 6)) +
+  #labs(title = "<span style = 'color:#E17F48;'>Criminal Justice Cohort</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+
+```
+
+## JoinBodi
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%"}
+#JoinBodi subgraph on g
+ggraph(g_non, layout = "stress") +
+  geom_edge_bundle_force(edge_color = "lightgrey", edge_linewidth = .4, alpha = .8
+                  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                  , ends = "last", type = "closed")
+                  , threshold = .4
+                  , n_cycle = 2) +
+  geom_node_point(aes(size = degree, shape = grantee), color = "white")+
+  geom_node_point(aes(size = degree, shape = grantee, color = ifelse(group == "JoinBodi", "JoinBodi", "Other")))+
+  geom_node_text(aes(label = ifelse(group == "JoinBodi", acronym, NA)), size = 5, repel = TRUE, check_overlap = FALSE, max.overlaps = 20) +
+  ggforce::geom_mark_hull(
+    aes(x, y, group = cohort
+        , label = cohort
+        , filter = cohort == "JoinBodi")
+    , fill = palette[[3]]
+    , label.colour = palette[[3]]
+    , label.fill = NA
+    , label.fontsize = 16
+    , con.colour = palette[[3]],
+    , concavity = 4,
+    expand = unit(2, "mm"),
+    alpha = 0.25
+  ) +
+  scale_color_manual(values = c("JoinBodi" = palette[[3]], "Other" = "grey")) +
+  scale_size(range = c(2, 6)) +
+ #labs(title = "<span style = 'color:#5B507A;'>JoinBodi Cohort</span>")+
+  theme_graph() +
+  theme(legend.position = "none"
+        , plot.title.position = "plot"
+        , plot.title = element_markdown())
+```
+:::
+
+::: panel-tabset
+## Cross Cohort Connectors
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%"}
+
+# cross community nodes
+communities <- V(g_non)$cohort
+
+
+V(g_non)$community <- V(g_non)$cohort 
+
+V(g_non)$names_pretty <- stringr::str_wrap(V(g_non)$name, width = 20)
+#V(g_non)$filtered <- V(g_non)$grantee != "Non Grantee"
+
+#E(g_non)$cross_community <- V(g_non)[ends(g_non, E(g_non))[,1]]$community != V(g_non)[ends(g_non, E(g_non))[,2]]$community
+
+# Define the community to **exclude**
+excluded_community <- "Non Grantee"
+
+# Identify edges that **connect to the excluded community**
+E(g_non)$involves_excluded <- V(g_non)[ends(g_non, E(g_non))[,1]]$community == excluded_community |
+  V(g_non)[ends(g_non, E(g_non))[,2]]$community == excluded_community
+
+# Identify cross-community edges **that do not involve the excluded community**
+E(g_non)$cross_community <- V(g_non)[ends(g_non, E(g_non))[,1]]$community != 
+  V(g_non)[ends(g_non, E(g_non))[,2]]$community & 
+  !E(g_non)$involves_excluded
+
+#Identify nodes that are at the ends of cross-community edges
+cross_community_nodes <- unique(as.vector(ends(g_non, E(g_non)[E(g_non)$cross_community])))
+
+#add an acronym column that only applies to cross-community nodes
+V(g_non)$acronym_cross <- ifelse(V(g_non)$name %in% cross_community_nodes, V(g_non)$acronym, NA)
+
+
+subtitle <- "<span style = 'font-size:18pt; color:#0964B0;'>**Behavior Change Cohort**</span>, <span style = 'font-size:18pt; color:#B5984F;'>**Media and Journalism Cohort**</span>, <span style = 'font-size:18pt; color:#E17F48;'>**Criminal Justice Cohort**</span>, <br><span style = 'font-size:18pt; color:#5B507A;'>**JoinBodi Cohort**</span>"
+
+cross_cohort <- ggraph(g_non, "stress") +
+  geom_edge_bundle_force(aes(alpha = !involves_excluded), edge_color = "white"
+                  , edge_linewidth = .4
+                         , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                                         , ends = "last", type = "closed"), threshold = .4, n_cycle = 2) +
+  geom_node_point(aes(size = degree, shape = grantee), color = "white") +
+  geom_node_point(aes(size = degree, shape = grantee, color = cohort)) +
+  
+  #foreground
+  geom_edge_bundle_force(aes(alpha = cross_community, colour = cross_community), width = 1)+
+                     #, edge_linewidth = ifelse(color = TRUE, 2, .5))
+                        #, edge_linewidth = .4
+                      #, alpha = .8
+                      #  , arrow = arrow(angle = 15, length = unit(.05, "inches")
+                      #                  , ends = "last", type = "closed"), threshold = .4, n_cycle = 2) +
+   geom_node_point(aes(size = degree, shape = grantee, color = cohort)) +
+   #geom_node_point(data = ggraph(g_non_delete, "stress"), aes(size = degree, shape = grantee, color = cohort)) +
+   geom_node_text(aes(label = acronym_cross), size = 4, repel = TRUE
+                  , max.overlaps = Inf, na.rm = TRUE
+                  , nudge_y = .05
+                  ) +
+  #scale_edge_color_manual(values = c("TRUE" = "red", "FALSE" = "grey")) +
+  scale_alpha_manual(values = c("TRUE" = 1, "FALSE" = 0)) +
+  scale_edge_color_manual(values = c("TRUE" = "red", "FALSE" = "white"))+
+   scale_size(range = c(2, 6)) +
+   scale_color_manual(values = palette)+
+  # scale_edge_color_manual(values = c("grey", "red")) +
+   labs(title = "Cross Cohort Connections "
+        , subtitle = subtitle)+
+   theme_graph() +
+   theme(legend.position = "bottom"
+         , plot.subtitle = ggtext::element_markdown()) +
+   guides(color = "none", fill = "none")
+ 
+cross_cohort
+```
+
+## Cross Cohort Connectors: Zoomed-in
+
+```{r, fig.align="center", fig.width=12, fig.height=10, out.width="100%"}
+
+cross_cohort +
+  coord_cartesian(xlim = c(-6, 3), ylim = c(-8, 1))
+
+```
+:::

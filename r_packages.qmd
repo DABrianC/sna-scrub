@@ -1,0 +1,59 @@
+---
+title: "Annex 6: R packages used"
+format:
+  html:
+    toc: true
+    css: prep/styles.css
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+This list contains a list of R packages used in this analysis. It does not list all of their dependencies.
+
+:::::: columns
+::: {.column width="33%"}
+-   concaveman
+-   cowplot
+-   extrafont
+-   extrafontdb
+-   flextable
+-   ggalluvial
+-   ggiraph
+-   ggnetwork
+-   ggraph
+-   ggtext
+-   gifski
+:::
+
+::: {.column width="33%"}
+-   graphlayouts
+-   leaflet
+-   lubridate
+-   igraph
+-   janitor
+-   here
+-   knitr
+-   networkD3
+-   patchwork
+-   RColorBrewer
+-   readxl
+:::
+
+::: {.column width="33%"}
+-   rgeoboundaries
+-   scales
+-   sf
+-   sfnetworks
+-   sna
+-   threejs
+-   tidygraph
+-   tidyverse
+-   tmap
+-   tmaptools
+-   visNetwork
+:::
+::::::

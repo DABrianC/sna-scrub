@@ -1,0 +1,145 @@
+---
+title: "Annex 5: Descriptive statistics"
+format:
+  html:
+    toc: true
+    css: prep/styles.css
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+This document contains tables of descriptive statistics from the survey data.
+
+```{r}
+source(here::here("./prep/prep.r"))
+source(here::here("./scripts/00 cleaning script.R"))
+source(here::here("./scripts/01 analysis script.R"))
+source(here::here("./scripts/01 descriptives.R"))
+
+
+```
+
+# Organizations
+
+## Organization types in dataset
+
+### Types of Organizations
+
+```{r}
+
+flex_fun(data = df_orgs)
+
+```
+
+### Grantee Organizations
+
+```{r}
+flex_fun(data = df_grantee)
+```
+
+### Voice or Teeth Organizations
+
+```{r}
+
+flex_fun(data = df_teeth)
+```
+
+### Organizations by Cohort
+
+```{r}
+flex_fun(data = df_orgs_cohort)
+
+```
+
+### Organizations by Type and Cohort
+
+```{R}
+flex_fun(data = df_orgs_desc_cohort)
+```
+
+## State-level descriptive statistics
+
+### Organizations, by State
+
+```{r}
+
+flex_fun(data = df_state)
+
+```
+
+### Types of Organization, by State
+
+```{r}
+flex_fun(data = df_orgs_state)
+```
+
+### Cohorts, by State
+
+```{r}
+flex_fun(data = df_cohort_states)
+```
+
+# Connections
+
+### Level of Collaboration
+
+```{r}
+flex_fun(data = df_collab_ft)
+```
+
+### Grantee and Non Grantee Collaboration
+
+```{r}
+flex_fun(data = df_collab_grantee)
+```
+
+### Level of Collaboration by Cohort
+
+```{r}
+
+flex_fun(data = df_collab_cohort)
+
+```
+
+### Frequency of Collaboration
+
+```{r}
+flex_fun(data = df_collab_freq)
+
+```
+
+### Level of Collaboration by Frequency
+
+```{r}
+
+flex_fun(data = collab_freq_level)
+```
+
+### Grantee type by Frequency of Collaboration
+
+```{r}
+flex_fun(data = df_collab_freq_grantee)
+```
+
+### Voice or Teeth Connection by Frequency
+
+```{r}
+flex_fun(data = df_collab_freq_teeth)
+
+```
+
+### Type of Organization Connections by Frequency
+
+```{r}
+flex_fun(data = df_collab_freq_desc_org)
+```
+
+```{r}
+
+
+
+```

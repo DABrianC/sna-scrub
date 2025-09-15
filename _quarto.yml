@@ -1,0 +1,48 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Big Bet on Nigeria"
+  subtitle: "Endline Social Network Analysis"
+  author: "Brian Calhoon and Randi Rumbold"
+  date: "March 2025"
+  chapters:
+    - index.qmd
+    - Introduction.qmd
+    - Methodology.qmd
+    - part: "Findings"
+      chapters: 
+        - Collaboration.qmd
+        - Diversity.qmd
+        - 'Adaptive Resilience.qmd'
+        - Institutionalization.qmd
+        - Scale.qmd
+    - part: "Conclusions"
+      chapters:
+        - Conclusions.qmd
+    - part: "Annexes"
+      chapters: 
+        - 'Interactive Network Map.qmd'
+        - 'SNA_nigeria_map.qmd'
+        - centrality_statistics.qmd
+        - Organizations.qmd
+        - SNA_descriptive_tables.qmd
+        - r_packages.qmd
+       
+        
+
+    
+
+format: 
+  html:
+    execute:
+      echo: false
+      eval: true
+    theme: cosmo
+    css: prep/styles.css
+    number-sections: false
+    embed-resources: true
+    
+editor: visual
+

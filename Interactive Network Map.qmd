@@ -1,0 +1,81 @@
+---
+title: "Annex 1: Interactive Network Map"
+format:
+  html:
+    toc: true
+    css: prep/styles.css
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+```{r}
+source(here::here("./prep/prep.R"))
+source(here::here("./scripts/00 cleaning script.R"))
+
+```
+
+The graphic below is interactive. Readers can select organizations by using either the "Select by id" dropdown menu or by hovering or clicking on an organization in the graphic. When readers select an organization - using either method - the first and second order connections are also highlighted. This helps identify which organizations are near in the network.
+
+Readers can also highlight individual cohorts by using the "Select by group" dropdown menu.
+
+The graphic also allows for zooming in and out. When zooming in names will appear on individual organizations as space becomes available.
+
+```{r, fig.cap="An interactive mapping based on the survey data collected of the Endline Accountability Ecosystem."}
+
+#| out-width: 100%
+#| fig-cap: "Click on a node to see the organization name and centrality statistics"
+
+
+V(g_non)$group <- V(g_non)$cohort
+V(g_non)$title <- paste0("<b>Org:</b> ", V(g_non)$name, "<br><b>Cohort:</b> ", V(g_non)$cohort
+                     , "<br><b>Degree:</b> ", igraph::degree(g_non), "<br><b>Between:</b> ", round(igraph::betweenness(g_non), digits = 2)                    , "<br><b>Harmonic Centrality:</b> ", round(igraph::harmonic_centrality(g_non), digits = 2), "<br><b>Eigen Centrality Score:</b> ", round(igraph::eigen_centrality(g_non)$vector, digits = 2))
+V(g_non)$degree <- igraph::degree(g_non)
+V(g_non)$betweenness <- round(igraph::betweenness(g_non), digits = 2)
+V(g_non)$centrality <- round(igraph::harmonic_centrality(g_non), digits = 2)
+V(g_non)$eigen <- round(igraph::eigen_centrality(g_non)$vector, digits = 2)
+V(g_non)$value <- log10(igraph::degree(g_non))
+
+V(g_non)$color <- ifelse(V(g_non)$cohort == "Behavior Change", "#0964B0" 
+                         , ifelse(V(g_non)$cohort == "Criminal Justice", "#E17F48"
+                          , ifelse(V(g_non)$cohort == "JoinBodi", "#5B507A"
+                            , ifelse(V(g_non)$cohort == "Media and Journalism", "#B5984F"
+                             , "grey"))))
+
+V(g_non)$shape <- ifelse(V(g_non)$grantee == "Non Grantee", "triangle", "dot")
+
+color_map <- c(`Behavior Change` = "#0964B0"
+               , `Criminal Justice` = "#E17F48"
+               , `JoinBodi` = "#5B507A"
+               , `Media and Journalism` = "#B5984F"
+               , `Non Grantee` = "grey")
+
+wrapped_colors <- str_wrap(names(color_map), width = 14)
+
+igraph <- toVisNetworkData((g_non))
+
+igraph$nodes$color <- igraph$nodes$color.background <- igraph$nodes$color
+
+igraph$nodes$shape <- V(g_non)$shape
+
+legend_data <- unique(igraph$nodes[, c("shape", "color")])
+
+visNetwork(nodes = igraph$nodes 
+           , edges = igraph$edges
+           , main = "Endline Accountability Ecosystem") |>
+  visEdges(arrows = "to") |> 
+  visOptions(highlightNearest = list(enabled = TRUE, degree = 2, hover = T)
+             , selectedBy = "group"
+             , nodesIdSelection = TRUE) |> 
+  visLegend(useGroups = FALSE
+    , addNodes= data.frame(
+        label = wrapped_colors
+      , shape = rev(legend_data$shape)
+      , color = unname(color_map)
+  )) |> 
+  visLayout(randomSeed = 415)
+
+```
