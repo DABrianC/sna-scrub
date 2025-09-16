@@ -25,9 +25,9 @@ source(here::here("./scripts/01 descriptives.R"))
 
 The MacArthur Foundation’s Big Bet On Nigeria program supports Nigerian-led efforts to reduce corruption by strengthening accountability, transparency, and participation. A resilient accountability ecosystem—the networks of relationships “between citizens and governing authorities … \[and\] other important actors, including media, private sector, diverse organized citizen groups, and various actors within the state itself” that collectively support social accountability—is essential to the success and sustainability of On Nigeria’s anticorruption programming (for more on accountability ecosystems, see [Halloran’s Accountability Ecosystems: The Evolution of a Keyword)](https://accountabilityresearch.org/accountability-ecosystems-the-evolution-of-a-keyword/).
 
-This social network analysis (SNA) report explores how On Nigeria grantees collaborate with other actors in the broader accountability ecosystem and with each other, the outcomes to which collaboration contributes, and how and to what end collaborative networks might be further strengthened, **to bolster anticorruption efforts**. To do this, the report will investigate the ecosystem elements of collaboration, diversity, adaptive resilience, institutionalization, and scale.[^1] As a result, this report directly addresses the evolution of the accountability ecosystem (the "trunk" of On Nigeria's theory of change"), and highlights changes since the baseline SNA from 2022.
+This social network analysis (SNA) report explores how On Nigeria grantees collaborate with other actors in the broader accountability ecosystem and with each other, the outcomes to which collaboration contributes, and how and to what end collaborative networks might be further strengthened, **to bolster anticorruption efforts**. To do this, the report will investigate the ecosystem elements of collaboration, diversity, adaptive resilience, institutionalization, and scale.[^introduction-1] As a result, this report directly addresses the evolution of the accountability ecosystem (the "trunk" of On Nigeria's theory of change"), and highlights changes since the baseline SNA from 2022.
 
-[^1]: These elements are contained in the Portfolio Rubrics of the Final Evaluation design.
+[^introduction-1]: These elements are contained in the Portfolio Rubrics of the Final Evaluation design.
 
 # Understanding Social Networks
 
@@ -41,12 +41,12 @@ For the baseline SNA, the EL Partner distributed an online survey to On Nigeria 
 
 The Endline network of On Nigeria grantees and partners consists of `r gorder(g_non)` organizations and `r gsize(g_non)` connections. The relationships between and among these organizations are the focus of this network analysis. The nodes consist of `r length(dat5_non5$grantee[dat5_non5$grantee=="Grantee"])` grantees and `r length(dat5_non5$grantee[dat5_non5$grantee=="Non Grantee"])` non-grantees.
 
-The endline network is made up of different types of organizations. The most common type of organization is a non-governmental organiztion (NGO) which makes up `r ngo_orgs` percent[^2] of all the organizations. This represents a `r 63 - ngo_orgs` percent decrease in the percent of NGOs in the endline network compared to the baseline network. The next most frequent organization type are Ministries, Departments, and Agencies (MDAs), making up `r govt_orgs` percent[^3] which is consistent with the baseline network (24 percent). `r private_orgs` percent[^4] of actors in the network are private businesses, an increase of `r private_orgs-13` percent from the baseline. Finally, international NGOs (INGOs) make up `r ingo_orgs` percent[^5] of the endline network.
+The endline network is made up of different types of organizations. The most common type of organization is a non-governmental organiztion (NGO) which makes up `r ngo_orgs` percent[^introduction-2] of all the organizations. This represents a `r 63 - ngo_orgs` percent decrease in the percent of NGOs in the endline network compared to the baseline network. The next most frequent organization type are Ministries, Departments, and Agencies (MDAs), making up `r govt_orgs` percent[^introduction-3] which is consistent with the baseline network (24 percent). `r private_orgs` percent[^introduction-4] of actors in the network are private businesses, an increase of `r private_orgs-13` percent from the baseline. Finally, international NGOs (INGOs) make up `r ingo_orgs` percent[^introduction-5] of the endline network.
 
-[^2]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="NGO"])` organizations
+[^introduction-2]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="NGO"])` organizations
 
-[^3]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="MDA"])` organizations
+[^introduction-3]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="MDA"])` organizations
 
-[^4]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="Private Business"])` organizations
+[^introduction-4]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="Private Business"])` organizations
 
-[^5]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="INGO"])` organizations
+[^introduction-5]: `r length(dat5_non5$desc_org[dat5_non5$desc_org=="INGO"])` organizations

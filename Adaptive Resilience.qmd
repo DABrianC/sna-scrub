@@ -18,7 +18,6 @@ editor: visual
 
 [**Finding 14. Deficits in trust, a lack of willingness to compromise, and uneven levels of commitment all pose challenges for ecosystem actors in their efforts to collaborate with others.**]{style="color: #00457c;"}
 
-
 A non-grantee organization that works with academic and research institutions had issues with partners believing that their way is correct because they are the “custodians of knowledge” and another non-grantee had an issue with partners feeling as though their organizations were in competition.
 
 ::: box
