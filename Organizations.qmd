@@ -20,10 +20,9 @@ source(here::here("./scripts/01 descriptives.R"))
 
 ```{r}
 
-orgs_acs <- acronyms_types |> 
-  select("Organization" = organization
-         , "Acronym" = acronym) |> 
+orgs_acs <- tibble("Organization" =    V(g_non)$name, "Acronym" = V(g_non)$acronym) |> 
   flex_fun()
 
 orgs_acs
+
 ```
