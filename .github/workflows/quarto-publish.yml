@@ -36,7 +36,7 @@ jobs:
           to: html # or whatever format you need
 
       - name: Upload to GitHub Pages
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v4
         with:
           path: docs
           
