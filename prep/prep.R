@@ -1,7 +1,7 @@
 # Set CRAN mirror to the cloud version of CRAN
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 
-
+ 
 packages <- c("bookdown", "concaveman", "cowplot", "extrafont", "extrafontdb"
               , "flextable", "ggalluvial", "ggiraph", "ggnetwork", "ggraph"
               , "ggtext", "gifski", "graphlayouts", "htmltools", "leaflet", "lubridate", "igraph", "janitor"
