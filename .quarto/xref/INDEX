@@ -1,0 +1,47 @@
+{
+  "index.qmd": {
+    "index.html": "f0cf0ada"
+  },
+  "Introduction.qmd": {
+    "Introduction.html": "a7d11d98"
+  },
+  "Methodology.qmd": {
+    "Methodology.html": "a13d15e3"
+  },
+  "Collaboration.qmd": {
+    "Collaboration.html": "833233b9"
+  },
+  "Diversity.qmd": {
+    "Diversity.html": "2a5227f0"
+  },
+  "Adaptive Resilience.qmd": {
+    "Adaptive Resilience.html": "4b1c1f15"
+  },
+  "Institutionalization.qmd": {
+    "Institutionalization.html": "44901478"
+  },
+  "Scale.qmd": {
+    "Scale.html": "39fade23"
+  },
+  "Conclusions.qmd": {
+    "Conclusions.html": "07247b71"
+  },
+  "Interactive Network Map.qmd": {
+    "Interactive Network Map.html": "0ed11fb9"
+  },
+  "SNA_nigeria_map.qmd": {
+    "SNA_nigeria_map.html": "7ae3c546"
+  },
+  "centrality_statistics.qmd": {
+    "centrality_statistics.html": "74f9bc77"
+  },
+  "Organizations.qmd": {
+    "Organizations.html": "db27c59b"
+  },
+  "SNA_descriptive_tables.qmd": {
+    "SNA_descriptive_tables.html": "35e31226"
+  },
+  "r_packages.qmd": {
+    "r_packages.html": "aa6eaa0a"
+  }
+}
