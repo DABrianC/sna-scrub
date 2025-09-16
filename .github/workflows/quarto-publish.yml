@@ -40,7 +40,7 @@ jobs:
         with:
           path: docs
           
-deploy:
+  deploy:
     needs: build-deploy
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
