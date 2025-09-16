@@ -1,0 +1,144 @@
+---
+title: "Executive Summary"
+author: "Brian Calhoon and Randi Rumbold"
+
+execute: 
+  warning: false
+  message: false
+  error: false
+  echo: false
+editor: visual
+---
+
+
+
+
+
+## Introduction
+
+The MacArthur Foundation’s Big Bet On Nigeria program supports Nigerian-led efforts to reduce corruption by strengthening accountability, transparency, and participation. A resilient accountability ecosystem—the networks of relationships “between citizens and governing authorities … \[and\] other important actors, including media, private sector, diverse organized citizen groups, and various actors within the state itself” that collectively support social accountability—is essential to the success and sustainability of On Nigeria’s anticorruption programming (for more on accountability ecosystems, see [Halloran’s Accountability Ecosystems: The Evolution of a Keyword)](https://accountabilityresearch.org/accountability-ecosystems-the-evolution-of-a-keyword/).
+
+This social network analysis (SNA) report explores how On Nigeria grantees collaborate with other actors in the broader accountability ecosystem and with each other, the outcomes to which collaboration contributes, and how and to what end collaborative networks might be further strengthened, to bolster anticorruption efforts. To do this, the report will investigate the ecosystem elements of collaboration, diversity, adaptive resilience, institutionalization, and scale.[^index-1] As a result, this report directly addresses the evolution of the accountability ecosystem (the “trunk” of On Nigeria’s theory of change”), and highlights changes since the baseline SNA from 2022.
+
+[^index-1]: These elements are contained in the Portfolio Rubrics of the Final Evaluation design.
+
+## Methodology
+
+In October 2024, the Evaluation and Learning Partner (EL Partner) held a workshop in Abuja, Nigeria with all On Nigeria grantees for the final annual, in-person learning event of On Nigeria 2.0. Grantees represented all four cohorts (Behavior Change, Criminal Justice, Joinbodi, and Media and Journalism). Each grantee completed a survey, in which they identified their primary partners, and in November 2024, the EL Partner followed up with each grantee via survey to identify additional partner relationships. In January 2025, the EL Partner sent a survey to non-grantee organizations that were identified by grantees as connections to develop a more robust network. The survey was supplemented with six focus group discussions (FGDs) with grantees (4 FGDs) and non-grantees (2 FGDs) in February 2025.
+
+## Findings
+
+The findings from this analysis are summarized in Table 1.
+
+
+
+
+
+```{r, fig.cap="Table 1: Findings from each of the reports subsections."}
+flex_fun <- function(data) {
+
+header_color <- "#00457c"
+row_color <- "#EDF0DF"
+
+  ft <- data |> 
+  flextable::flextable() |> 
+    flextable::bold(part = "header") |>  # Make column labels bold
+    flextable::color(color = header_color, part = "header") |>  # Corrected header text color
+    flextable::bg(i = seq(1, nrow(data), by = 2), bg = row_color, part = "body") |>  # Alternate row colors
+    flextable::autofit() |> 
+    flextable::align(align = "center", part = "all")  
+    
+  return(ft)
+ 
+}
+
+
+
+find_tbl <- readxl::read_xlsx(here::here("./data/findingstable.xlsx")
+                              , col_names = FALSE)
+
+library(officer)
+
+ft <- flex_fun(find_tbl) |> 
+  flextable::align(align = "left") |> 
+  flextable::delete_part(part = "header") |> 
+  flextable::bold(i = c(1, 9, 16, 19, 22), bold = TRUE) |> 
+  flextable::color(i = c(1, 9, 16, 19, 22), color = "#00457c") |> 
+  flextable::hline_top(border = fp_border(color = "#00457c", width = 2)
+            , part = "body") |> 
+  flextable::hline(i = c(1, 9, 16, 19, 22, 23),
+                 border = fp_border(color = "#00457c", width = 2)
+                 , part = "body")  |> 
+  flextable::bg(i = c(1, 9, 16, 19, 22), bg = "#EDF0DF", part = "body") |> 
+  flextable::bg(i = c(2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 17, 18,20, 21, 23)
+     , bg = "white", part = "body") |> 
+  flextable::hline(i = c(2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 17, 18,20, 21, 23)
+        , border = fp_border(color = "#00457c", width = 1), part = "body") |> 
+  flextable::hline(i = c(8, 15, 18, 21, 23)
+        , border = fp_border(color = "#00457c", width = 2)
+        , part = "body")
+  
+ft
+
+```
+
+
+
+
+
+## Conclusions
+
+Seven key conclusions from the analysis of the Endline On Nigeria network are displayed in Table 2.
+
+
+
+
+
+```{r fig.cap="Table 2: The main conclusions drawn from the table about the On Nigeria accountability network."}
+
+flex_fun <- function(data) {
+
+header_color <- "#00457c"
+row_color <- "#EDF0DF"
+
+  ft <- data |> 
+  flextable::flextable() |> 
+    flextable::bold(part = "header") |>  # Make column labels bold
+    flextable::color(color = header_color, part = "header") |>  # Corrected header text color
+    flextable::bg(i = seq(1, nrow(data), by = 2), bg = row_color, part = "body") |>  # Alternate row colors
+    flextable::autofit() |> 
+    flextable::align(align = "center", part = "all")  
+    
+  return(ft)
+ 
+}
+
+
+conc_tbl <- readxl::read_xlsx(here::here("./data/conclusions_tbl.xlsx")
+                              , col_names = FALSE)
+
+library(officer)
+
+ft1 <- flex_fun(conc_tbl) |> 
+  flextable::align(align = "left") |> 
+  flextable::delete_part(part = "header") |> 
+  flextable::bold(i = c(1, 4, 7, 9, 11), bold = TRUE) |> 
+  flextable::color(i = c(1, 4, 7, 9, 11), color = "#00457c") |> 
+  flextable::hline_top(border = fp_border(color = "#00457c", width = 2)
+            , part = "body") |> 
+  flextable::hline(i = c(1, 4, 7, 9, 11, 12),
+                 border = fp_border(color = "#00457c", width = 2)
+                 , part = "body")  |> 
+  flextable::bg(i = c(1, 4, 7, 9, 11), bg = "#EDF0DF", part = "body") |> 
+  flextable::bg(i = c(2, 3, 5, 6, 8, 10)
+     , bg = "white", part = "body") |> 
+  flextable::hline(i = c(2, 3,5, 6, 8, 10)
+        , border = fp_border(color = "#00457c", width = 1), part = "body") |> 
+  flextable::hline(i = c(3, 6, 8, 10)
+        , border = fp_border(color = "#00457c", width = 2)
+        , part = "body")
+  
+ft1
+
+```
+
