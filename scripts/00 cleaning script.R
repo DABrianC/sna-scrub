@@ -1365,56 +1365,56 @@ all_orgs_base <- data.frame(organization = unique(c(base4$from, base4$to))) %>%
 
 ### Create acronyms from existing names ---
 # Function to extract or generate acronyms (only for multi-word names)
-#extract_or_generate_acronym <- function(name) {
+extract_or_generate_acronym <- function(name) {
   # Try to extract existing acronym from parentheses
-  #acronym <- stringr::str_extract(name, "\\(([^)]+)\\)")  # Extract text inside parentheses
+  acronym <- stringr::str_extract(name, "\\(([^)]+)\\)")  # Extract text inside parentheses
   
   # If an acronym exists, remove parentheses and return
- # if (!is.na(acronym)) {
- #   return(stringr::str_replace_all(acronym, "[()]", ""))  # Remove parentheses
- # }
+  if (!is.na(acronym)) {
+    return(stringr::str_replace_all(acronym, "[()]", ""))  # Remove parentheses
+  }
   
   # Split name into words
- # words <- unlist(stringr::str_split(name, "\\s+"))
+  words <- unlist(stringr::str_split(name, "\\s+"))
   
   # If name has only one word, return it as is
- # if (length(words) == 1) {
-  #  return(words)  
-  #}
+  if (length(words) == 1) {
+    return(words)  
+  }
   
   # Otherwise, generate acronym from capital letters
- # generated_acronym <- stringr::str_extract_all(name, "[A-Z]") %>% unlist() %>% paste0(collapse = "")
+  generated_acronym <- stringr::str_extract_all(name, "[A-Z]") %>% unlist() %>% paste0(collapse = "")
   
- # return(generated_acronym)
-#}
+  return(generated_acronym)
+}
 
 # Generate acronyms for all nodes
-#acronyms <- sapply(V(g_non)$name, extract_or_generate_acronym)
+acronyms <- sapply(V(g_non)$name, extract_or_generate_acronym)
 
 # Ensure uniqueness by appending numbers to duplicates
 
-#make_unique <- function(acronyms) {
- # seen <- list()
- # for (i in seq_along(acronyms)) {
- #   original <- acronyms[i]
- #   new_acronym <- original
-  #  count <- 1
+make_unique <- function(acronyms) {
+  seen <- list()
+  for (i in seq_along(acronyms)) {
+    original <- acronyms[i]
+    new_acronym <- original
+    count <- 1
     
     # While the acronym already exists, append a number
-   # while (new_acronym %in% seen) {
-  #    count <- count + 1
-  #    new_acronym <- paste0(original, count)
-  #  }
+    while (new_acronym %in% seen) {
+      count <- count + 1
+      new_acronym <- paste0(original, count)
+    }
     
     # Store unique acronym
-  #  seen[[new_acronym]] <- TRUE
- #   acronyms[i] <- new_acronym
- # }
- # return(acronyms)
-#}
+    seen[[new_acronym]] <- TRUE
+    acronyms[i] <- new_acronym
+  }
+  return(acronyms)
+}
 
 # Apply uniqueness function
-#V(g_non)$acronym <- make_unique(acronyms)
+V(g_non)$acronym <- make_unique(acronyms)
 
 # add locations to the dat5_non5 object
 #dat5_non5 <- dat5_non5 |> 
